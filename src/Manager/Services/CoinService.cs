@@ -11,14 +11,15 @@ public class CoinService
         _random = new Random();
     }
 
-    public Coin? Get(int treasureLevel, int roll)
+    public Coin Get(int treasureLevel, int roll)
     {
-        if (roll < 15)
-            return null;
-        if(roll < 30)
-            return Coins.Copper;
-        if(roll < 53)
-            return Coins.Silver;
-        return Coins.Gold;
+        return roll switch
+        {
+            < 15 => new Coin(0),
+            < 30 => Coins.Copper,
+            < 53 => Coins.Silver,
+            < 96 => Coins.Gold,
+            _ => Coins.Platinum
+        };
     }
 }

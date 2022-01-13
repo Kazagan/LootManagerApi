@@ -15,10 +15,10 @@ public class CoinServiceTests
     }
 
     [Fact]
-    public void ShouldReturnNothingWhenTlBelow15()
+    public void ShouldReturnNoneWhenTlBelow15()
     {
         var result = _sut.Get(1, 14);
-        result.Should().Be(null);
+        result.InGold.Should().Be(0);
     }
     
     [Fact]
@@ -40,5 +40,12 @@ public class CoinServiceTests
     {
         var results = _sut.Get(1, 53);
         results.InGold.Should().Be(Coins.Gold.InGold);
+    }
+
+    [Fact]
+    public void ShouldRetrnPlatIfTl1RollAbove95()
+    {
+        var results = _sut.Get(1, 96);
+        results.InGold.Should().Be(Coins.Platinum.InGold);
     }
 }
