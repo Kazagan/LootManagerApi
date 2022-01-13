@@ -24,7 +24,6 @@ public class Roller
     private Coin RollGold(int treasureLevel, int roll)
     {
         var coins = Coins.Copper;
-        coins.Count = _random.Next(1, 6) * 1000;
         return coins;
     }
 }

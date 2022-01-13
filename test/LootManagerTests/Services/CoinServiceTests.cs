@@ -1,4 +1,6 @@
+using System;
 using FluentAssertions;
+using Manager.Enums;
 using Manager.Models;
 using Manager.Services;
 using Xunit;
@@ -12,40 +14,37 @@ public class CoinServiceTests
     public CoinServiceTests()
     {
         _sut = new CoinService();
-    }
-
-    [Fact]
-    public void ShouldReturnNoneWhenTlBelow15()
-    {
-        var result = _sut.Get(1, 14);
-        result.InGold.Should().Be(0);
+        
     }
     
     [Fact]
-    public void ShouldReturnCopperTl1RollAbove14()
+    public void ShouldReturnCopperLessThan15()
     {
-        var result = _sut.Get(1, 15);
-        result.InGold.Should().Be(Coins.Copper.InGold);
+        var result = _sut.Get(1, 14);
+        result.Name.Should().Be(CoinType.Copper);
     }
-
     [Fact]
-    public void ShouldReturnSilverIfTl1RollAbove29()
+    public void ShouldReturnNickelLessThan30()
     {
-        var result = _sut.Get(1, 30);
-        result.InGold.Should().Be(Coins.Silver.InGold);
+        var result = _sut.Get(1, 29);
+        result.Name.Should().Be(CoinType.Nickel);
     }
-
     [Fact]
-    public void ShouldReturnGoldIfTl1RollAbove52()
+    public void ShouldReturnSilverLessThan53()
     {
-        var results = _sut.Get(1, 53);
-        results.InGold.Should().Be(Coins.Gold.InGold);
+        var result = _sut.Get(1, 52);
+        result.Name.Should().Be(CoinType.Silver);
     }
-
     [Fact]
-    public void ShouldRetrnPlatIfTl1RollAbove95()
+    public void ShouldReturnGoldLessThan96()
     {
-        var results = _sut.Get(1, 96);
-        results.InGold.Should().Be(Coins.Platinum.InGold);
+        var result = _sut.Get(1, 95);
+        result.Name.Should().Be(CoinType.Gold);
+    }
+    [Fact]
+    public void ShouldReturnPlatGreaterThan65()
+    {
+        var result = _sut.Get(1, 96);
+        result.Name.Should().Be(CoinType.Platinum);
     }
 }

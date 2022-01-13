@@ -15,8 +15,8 @@ public class CoinService
     {
         return roll switch
         {
-            < 15 => new Coin(0),
-            < 30 => Coins.Copper,
+            < 15 => Coins.Copper,
+            < 30 => Coins.Nickel,
             < 53 => Coins.Silver,
             < 96 => Coins.Gold,
             _ => Coins.Platinum
