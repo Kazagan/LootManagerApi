@@ -31,6 +31,6 @@ public class CoinService
         var roll = 0;
         for (var i = 0; i < diceCount; i++)
             roll += _random.Next(1, diceSides);
-        return roll *= multiplier;
+        return roll * multiplier;
     }
 }
