@@ -14,7 +14,7 @@ public class Coin
     public int Count { get; set; }
 }
 
-public static class Coins
+public static class Coins // TODO Seed Into Db? Foriegn Key to CoinTable?
 {
     public static Coin Iron = new Coin(.001, CoinType.Iron);
     public static Coin HalfCopper = new Coin(.005, CoinType.HalfCopper);

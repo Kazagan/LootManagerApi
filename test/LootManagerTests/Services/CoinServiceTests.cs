@@ -1,7 +1,5 @@
-using System;
 using FluentAssertions;
 using Manager.Enums;
-using Manager.Models;
 using Manager.Services;
 using Xunit;
 
@@ -14,9 +12,9 @@ public class CoinServiceTests
     public CoinServiceTests()
     {
         _sut = new CoinService();
-        
+
     }
-    
+
     [Fact]
     public void ShouldReturnCopperLessThan15()
     {
@@ -42,7 +40,7 @@ public class CoinServiceTests
         result.Name.Should().Be(CoinType.Gold);
     }
     [Fact]
-    public void ShouldReturnPlatGreaterThan65()
+    public void ShouldReturnPlatGreaterThan95()
     {
         var result = _sut.Get(1, 96);
         result.Name.Should().Be(CoinType.Platinum);

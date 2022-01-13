@@ -16,7 +16,7 @@ public class Roller
         return new RollerResult()
         {
             Cash = RollGold(treasureLevel, _random.Next(1, 100)),
-            Gems = _random.Next(1,100),
+            Gems = _random.Next(1, 100),
             Items = _random.Next(1, 100)
         };
     }
