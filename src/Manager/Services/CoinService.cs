@@ -14,14 +14,15 @@ public class CoinService
 
     public Coin Get(int treasureLevel, int roll)
     {
-        var coinRoll = CoinTableRows.GetCoinTable();
-        var x = coinRoll.FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.InRange(roll));
+        var coinRoll = CoinTableRows
+            .GetCoinTable()
+            .FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.InRange(roll));
 
-        if (x is null) // TODO set up Logger, or return that something went wrong, throw error?
+        if (coinRoll is null) // TODO set up Logger, or return that something went wrong, throw error?
             return new Coin(0.0, CoinType.Iron);
 
-        var output = x.Coin;
-        output.Count = GetCount(x.DiceCount, x.DiceSides, x.Multiplier);
+        var output = coinRoll.Coin;
+        output.Count = GetCount(coinRoll.DiceCount, coinRoll.DiceSides, coinRoll.Multiplier);
         return output;
     }
 

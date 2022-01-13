@@ -27,7 +27,7 @@ public class CoinTable
     public bool InRange(int x) => x <= Max && x >= Min;
 }
 
-public static class CoinTableRows // TODO Seed in Database
+public static class CoinTableRows // TODO Seed in Database, and move these to test, and mock repository response.
 {
     public static List<CoinTable> GetCoinTable()
     {

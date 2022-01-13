@@ -45,4 +45,39 @@ public class CoinServiceTests
         var result = _sut.Get(1, 96);
         result.Name.Should().Be(CoinType.Platinum);
     }
+
+    [Fact]
+    public void ShouldBeWithinCopperRange()
+    {
+        var result = _sut.Get(1, 14);
+        result.Count.Should().BeInRange(2000, 12000);
+    }
+
+    [Fact]
+    public void ShouldBeWithinNickleRange()
+    {
+        var result = _sut.Get(1, 15);
+        result.Count.Should().BeInRange(400, 2400);
+    }
+
+    [Fact]
+    public void ShouldBeWithinSilverRange()
+    {
+        var result = _sut.Get(1, 52);
+        result.Count.Should().BeInRange(200, 1200);
+    }
+
+    [Fact]
+    public void ShouldBeWithinGoldRange()
+    {
+        var result = _sut.Get(1, 95);
+        result.Count.Should().BeInRange(20, 160);
+    }
+
+    [Fact]
+    public void ShouldBeWithinPlatRange()
+    {
+        var result = _sut.Get(1, 100);
+        result.Count.Should().BeInRange(10, 40);
+    }
 }
