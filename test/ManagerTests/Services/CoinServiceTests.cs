@@ -15,7 +15,7 @@ public class CoinServiceTests
     private readonly CoinService _sut;
     private readonly Mock<IRepository<ManagerContext>> _repository;
     private readonly Fixture _fixture;
-    
+
     public CoinServiceTests()
     {
         _fixture = new Fixture();
@@ -47,8 +47,9 @@ public class CoinServiceTests
 
         var sampleCoin = coinTables.First();
         var result = _sut.Get(sampleCoin.TreasureLevel, sampleCoin.Min);
-        var expectedRange = (1 * sampleCoin.DiceCount, sampleCoin.DiceCount * sampleCoin.DiceSides);
-        result?.Count.Should().BeInRange(expectedRange.Item1, expectedRange.Item2);
+        var min = 1 * sampleCoin.DiceCount * sampleCoin.Multiplier;
+        var max = sampleCoin.DiceCount * sampleCoin.DiceSides * sampleCoin.Multiplier;
+        result?.Count.Should().BeInRange(min, max);
     }
 
     [Fact]

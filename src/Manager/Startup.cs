@@ -1,21 +1,27 @@
-using Manager.Models;
+using Data.Repositories;
+using Manager.Services;
 
 namespace Manager;
 
-public class Startup
+public static class Startup
 {
-
-    public Startup()
+    public static void Run()
     {
-    }
+        var repo = new Repository<ManagerContext>(new ManagerContext());
+        var coinService = new CoinService(repo);
+        var roller = new Roller(coinService);
 
-    public void Write()
-    {
-        Console.WriteLine("Hello");
-    }
+        var input = "";
+        while (input != "exit")
+        {
+            input = Console.ReadLine();
+            if (!int.TryParse(input, out var treasureLevel))
+            {
+                Console.WriteLine("Input was not a number, try again");
+            }
 
-    public void Read()
-    {
-        Console.WriteLine("World");
+            var result = roller.Roll(treasureLevel);
+            Console.WriteLine($"Cash Roll: {result.Cash.Count} {result.Cash.CoinType}");
+        }
     }
 }

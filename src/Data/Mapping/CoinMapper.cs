@@ -1,3 +1,4 @@
+using Data.Enums;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,12 +8,24 @@ public static class CoinMapper
 {
     public static void MapCoins(this ModelBuilder modelBuilder)
     {
+        var length = Enum.
+            GetNames(typeof(CoinType))
+            .Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur)
+            .Length;
         modelBuilder.Entity<Coin>(entity =>
         {
-            entity.HasKey(e => e.CoinType);
-            entity.Property(e => e.CoinType).HasConversion<string>().IsRequired();
-            entity.Property(e => e.InGold).IsRequired().HasPrecision(4, 4);
-            entity.Ignore(e => e.Count);
+            entity.HasKey(e => e.Id);
+            entity
+                .Property(e => e.CoinType)
+                .HasConversion<string>()
+                .HasMaxLength(length)
+                .IsRequired();
+            entity
+                .Property(e => e.InGold)
+                .IsRequired()
+                .HasPrecision(4, 4);
+            entity
+                .Ignore(e => e.Count);
         });
     }
 }

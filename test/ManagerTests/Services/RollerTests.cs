@@ -1,6 +1,8 @@
 using Data.Models;
+using Data.Repositories;
 using FluentAssertions;
 using Manager.Services;
+using Moq;
 using Xunit;
 
 namespace LootManagerTests.Services;
@@ -8,10 +10,13 @@ namespace LootManagerTests.Services;
 public class RollerTests
 {
     private readonly Roller _sut;
+    private readonly CoinService _coinService;
 
     public RollerTests()
     {
-        _sut = new Roller();
+        var mockRepo = new Mock<IRepository<ManagerContext>>();
+        _coinService = new CoinService(mockRepo.Object);
+        _sut = new Roller(_coinService);
     }
 
     [Fact]

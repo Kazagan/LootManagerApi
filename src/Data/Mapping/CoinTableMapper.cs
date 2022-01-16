@@ -10,15 +10,15 @@ public static class CoinTableMapper
         modelBuilder.Entity<CoinTable>(entity =>
         {
             entity.HasKey(e => e.Id);
-            
+
             entity
                 .Property(e => e.TreasureLevel)
                 .IsRequired();
-            
+
             entity
                 .Property(e => e.Min)
                 .IsRequired();
-            
+
             entity
                 .Property(e => e.Max)
                 .IsRequired();
@@ -29,7 +29,7 @@ public static class CoinTableMapper
             entity
                 .Property(e => e.DiceCount)
                 .IsRequired();
-                
+
             entity
                 .Property(e => e.DiceSides)
                 .IsRequired();
@@ -38,5 +38,5 @@ public static class CoinTableMapper
                 .Property(e => e.Multiplier)
                 .IsRequired();
         });
-    } 
+    }
 }

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Data.Models;
+using Data.Repositories;
 using Manager.Models;
 
 namespace Manager.Services;
@@ -7,10 +8,12 @@ namespace Manager.Services;
 public class Roller
 {
     private readonly Random _random;
+    private readonly CoinService _coinService;
 
-    public Roller()
+    public Roller(CoinService coinService)
     {
         _random = new Random();
+        _coinService = coinService;
     }
     public RollerResult Roll(int treasureLevel)
     {
@@ -24,7 +27,6 @@ public class Roller
 
     private Coin RollGold(int treasureLevel, int roll)
     {
-        var coins = new Coin {};
-        return coins;
+        return _coinService.Get(treasureLevel, roll);
     }
 }

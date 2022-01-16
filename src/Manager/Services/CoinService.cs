@@ -1,5 +1,6 @@
 using Data.Models;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manager.Services;
 
@@ -14,13 +15,15 @@ public class CoinService
         _repository = repository;
     }
 
-    public Coin? Get(int treasureLevel, int roll)
+    public Coin Get(int treasureLevel, int roll)
     {
-        var coinRoll = _repository.Get<CoinTable>()
-            .FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.InRange(roll));
+        var coinRoll = _repository
+            .Get<CoinTable>()
+            .Include(x => x.Coin)
+            .FirstOrDefault(x => x.TreasureLevel == treasureLevel && roll <= x.Max && roll >= x.Min);
 
-        if (coinRoll is null) // TODO set up Logger, or return that something went wrong, throw error?
-            return null;
+        if (coinRoll?.Coin is null) // TODO set up Logger, or return that something went wrong, throw error?
+            return new Coin();
 
         var output = coinRoll.Coin;
         output.Count = GetCount(coinRoll.DiceCount, coinRoll.DiceSides, coinRoll.Multiplier);
