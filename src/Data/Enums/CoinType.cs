@@ -1,4 +1,4 @@
-namespace Manager.Enums;
+namespace Data.Enums;
 
 public enum CoinType
 {

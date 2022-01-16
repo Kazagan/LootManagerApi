@@ -9,7 +9,7 @@ public class Startup
     {
     }
 
-    public void Write(Item item)
+    public void Write()
     {
         Console.WriteLine("Hello");
     }

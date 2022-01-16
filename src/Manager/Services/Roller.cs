@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Data.Models;
 using Manager.Models;
 
 namespace Manager.Services;
@@ -23,7 +24,7 @@ public class Roller
 
     private Coin RollGold(int treasureLevel, int roll)
     {
-        var coins = Coins.Copper;
+        var coins = new Coin {};
         return coins;
     }
 }

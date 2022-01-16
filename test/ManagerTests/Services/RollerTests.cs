@@ -1,5 +1,5 @@
+using Data.Models;
 using FluentAssertions;
-using Manager.Models;
 using Manager.Services;
 using Xunit;
 

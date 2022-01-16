@@ -1,3 +1,5 @@
+using Data.Models;
+
 namespace Manager.Models;
 
 public class RollerResult
