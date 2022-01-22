@@ -26,36 +26,41 @@ public class CoinServiceTests
     [Fact]
     public void ShouldReturnExpectedCoinTypeForTreasureLevelAndRoll()
     {
-        var coinTables = _fixture.CreateMany<CoinTable>().ToList();
+        var coinTables = _fixture.CreateMany<CoinRoller>().ToList();
         _repository
-            .Setup(x => x.Get<CoinTable>())
+            .Setup(x => x.Get<CoinRoller>())
             .Returns(coinTables.AsQueryable);
 
         var sampleCoin = coinTables.First();
 
-        var result = _sut.Get(sampleCoin.TreasureLevel, sampleCoin.Min);
+        var result = _sut.Get(sampleCoin.TreasureLevel, sampleCoin.RollMin);
         result?.CoinType.Should().Be(sampleCoin.Coin.CoinType);
     }
 
     [Fact]
     public void ShouldReturnCountWithinRange()
     {
-        var coinTables = _fixture.CreateMany<CoinTable>().ToList();
+        var coinTables = _fixture
+            .Build<CoinRoller>()
+            .With(x => x.Coin, _fixture.Create<Coin>())
+            .With(x => x.RollMax, 100)
+            .With(x => x.RollMin, 1)
+            .CreateMany().ToList();
         _repository
-            .Setup(x => x.Get<CoinTable>())
+            .Setup(x => x.Get<CoinRoller>())
             .Returns(coinTables.AsQueryable);
 
         var sampleCoin = coinTables.First();
-        var result = _sut.Get(sampleCoin.TreasureLevel, sampleCoin.Min);
+        var result = _sut.Get(sampleCoin.TreasureLevel, sampleCoin.RollMin);
         var min = 1 * sampleCoin.DiceCount * sampleCoin.Multiplier;
         var max = sampleCoin.DiceCount * sampleCoin.DiceSides * sampleCoin.Multiplier;
-        result?.Count.Should().BeInRange(min, max);
+        result.Count.Should().BeInRange(min, max);
     }
 
     [Fact]
-    public void ShouldReturnNullIfNoMatch()
+    public void ShouldReturnDefaultIfNoMatch()
     {
         var result = _sut.Get(1, 15);
-        result.Should().BeNull();
+        result.Id.Should().Be(0);
     }
 }

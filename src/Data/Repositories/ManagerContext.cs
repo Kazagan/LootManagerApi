@@ -15,5 +15,8 @@ public class ManagerContext : DbContext
     {
         modelBuilder.MapCoins();
         modelBuilder.MapCoinTable();
+        modelBuilder.MapGoods();
+        modelBuilder.MapGoodRoller();
+        modelBuilder.MapGoodType();
     }
 }

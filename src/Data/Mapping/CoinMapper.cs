@@ -8,10 +8,7 @@ public static class CoinMapper
 {
     public static void MapCoins(this ModelBuilder modelBuilder)
     {
-        var length = Enum.
-            GetNames(typeof(CoinType))
-            .Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur)
-            .Length;
+        var length = SharedFunctions.GetEnumMaxLength<CoinType>();
         modelBuilder.Entity<Coin>(entity =>
         {
             entity.HasKey(e => e.Id);
