@@ -18,9 +18,6 @@ public static class GoodRollerMapping
                 .Property(e => e.RollMin)
                 .IsRequired();
             entity
-                .Property(e => e.RollMax)
-                .IsRequired();
-            entity
                 .Property(e => e.DiceCount)
                 .IsRequired();
             entity

@@ -20,10 +20,6 @@ public static class CoinRollerMapper
                 .IsRequired();
 
             entity
-                .Property(e => e.RollMax)
-                .IsRequired();
-
-            entity
                 .HasOne(e => e.Coin);
 
             entity

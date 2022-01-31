@@ -25,9 +25,6 @@ public static class GoodTypeRollerMapper
             entity
                 .Property(e => e.RollMin)
                 .IsRequired();
-            entity
-                .Property(e => e.RollMax)
-                .IsRequired();
         });
     }
 }
