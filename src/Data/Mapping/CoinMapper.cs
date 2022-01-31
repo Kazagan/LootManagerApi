@@ -23,6 +23,14 @@ public static class CoinMapper
                 .HasPrecision(4, 4);
             entity
                 .Ignore(e => e.Count);
+
+            entity
+                .HasData(Enum
+                    .GetValues<CoinType>()
+                    .Select(x => new Coin()
+                    {
+                        CoinType = x
+                    }));
         });
     }
 }
