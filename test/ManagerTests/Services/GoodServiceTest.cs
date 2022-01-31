@@ -1,6 +1,6 @@
 using System.Linq;
 using AutoFixture;
-using Data.Models;
+using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
 using Manager.Services;
@@ -32,7 +32,7 @@ public class GoodServiceTest
             .Setup(x => x.Get<GoodTypeRoller>())
             .Returns(goodTypes.AsQueryable);
 
-        var result = _sut.Get(sample.TreasureLevel, sample.RollMin);
+        var result = _sut.Get(sample.TreasureLevel, sample.RollMin, 5);
         result.Type.Should().Be(sample.Type);
     }
 
@@ -41,8 +41,6 @@ public class GoodServiceTest
     {
         var goodTypes = _fixture
             .Build<GoodTypeRoller>()
-            .With(x => x.RollMax, 100)
-            .With(x => x.RollMin, 1)
             .CreateMany();
         var sampleType = goodTypes.First();
         
@@ -52,8 +50,6 @@ public class GoodServiceTest
                 .Build<Good>()
                 .With(x => x.Type, sampleType.Type)
                 .Create)
-            .With(x => x.RollMin, 1)
-            .With(x => x.RollMax, 100)
             .CreateMany()
             .ToList();
         var goodSample = goodRoller.First();
@@ -70,7 +66,7 @@ public class GoodServiceTest
             .Setup(x => x.Get<Good>())
             .Returns(goods.AsQueryable);
 
-        var result = _sut.Get(sampleType.TreasureLevel, sampleType.RollMin);
+        var result = _sut.Get(sampleType.TreasureLevel, sampleType.RollMin, goodSample.RollMin);
         var min = 1 * goodSample.DiceCount * goodSample.Multiplier;
         var max = goodSample.DiceSides * goodSample.DiceCount * goodSample.Multiplier;
         result.Value.Count.Should().BeInRange(min, max);
@@ -79,7 +75,7 @@ public class GoodServiceTest
     [Fact]
     public void ShouldReturnDefaultGoodWhenNoResult()
     {
-        var result = _sut.Get(1, 15);
+        var result = _sut.Get(1, 15, 15);
         result.Should().BeEquivalentTo(new Good());
     }
 }

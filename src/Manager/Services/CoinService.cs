@@ -1,4 +1,5 @@
-using Data.Models;
+using System.Linq;
+using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,9 +31,9 @@ public class CoinService
         var x =  _repository
             .Get<CoinRoller>()
             .Include(x => x.Coin)
-            .FirstOrDefault(x => 
-                x.TreasureLevel == treasureLevel 
-                && roll <= x.RollMax 
+            .OrderBy(x => x.RollMin)
+            .LastOrDefault(x => 
+                x.TreasureLevel == treasureLevel
                 && roll >= x.RollMin);
         return x;
     }

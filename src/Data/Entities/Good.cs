@@ -1,6 +1,6 @@
 using Data.Enums;
 
-namespace Data.Models;
+namespace Data.Entities;
 
 public class Good
 {

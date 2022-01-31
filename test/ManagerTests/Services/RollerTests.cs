@@ -1,4 +1,4 @@
-using Data.Models;
+using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
 using Manager.Services;

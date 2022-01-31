@@ -1,7 +1,6 @@
 using System.Linq;
 using AutoFixture;
-using Data.Enums;
-using Data.Models;
+using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
 using Manager.Services;
@@ -43,8 +42,6 @@ public class CoinServiceTests
         var coinTables = _fixture
             .Build<CoinRoller>()
             .With(x => x.Coin, _fixture.Create<Coin>())
-            .With(x => x.RollMax, 100)
-            .With(x => x.RollMin, 1)
             .CreateMany().ToList();
         _repository
             .Setup(x => x.Get<CoinRoller>())

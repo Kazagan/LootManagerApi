@@ -1,5 +1,6 @@
+using System.Linq;
+using Data.Entities;
 using Data.Enums;
-using Data.Models;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,10 @@ public class GoodService
         _repository = repository;
     }
     
-    public Good Get(int treasureLevel, int roll)
+    public Good Get(int treasureLevel, int roll, int goodRoll)
     {
         var type = GetGoodType(treasureLevel, roll);
-        var rolledGood = GetGood(_random.Next(1, 100), type);
+        var rolledGood = GetGood(goodRoll, type);
 
         if (rolledGood is null)
             return new Good();
@@ -31,25 +32,25 @@ public class GoodService
 
     private GoodRoller? GetGood(int roll, GoodType type)
     {
-        return _repository
-            .Get<GoodRoller>()
+        var goodRollers = _repository
+            .Get<GoodRoller>();
+        var x =  goodRollers
             .Include(x => x.Good)
             .Include(x => x.Good.Value)
-            .FirstOrDefault(x => 
-                roll >= x.RollMin 
-                && roll <= x.RollMax
+            .LastOrDefault(x => 
+                roll >= x.RollMin
                 && type == x.Good.Type);
+        return x;
     }
 
     private GoodType GetGoodType(int treasureLevel, int roll)
     {
         var goodType = _repository
             .Get<GoodTypeRoller>()
-            .FirstOrDefault(x => 
+            .LastOrDefault(x => 
                 x.TreasureLevel == treasureLevel 
-                && roll >= x.RollMin 
-                && roll <= x.RollMax);
-        
-        return goodType?.Type ?? GoodType.SmallGem;
+                && roll >= x.RollMin);
+
+        return goodType?.Type ?? GoodType.Art;
     }
 }

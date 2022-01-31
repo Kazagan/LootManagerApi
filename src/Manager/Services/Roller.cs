@@ -1,6 +1,4 @@
-using System.Runtime.InteropServices;
-using Data.Models;
-using Data.Repositories;
+using Data.Entities;
 using Manager.Models;
 
 namespace Manager.Services;

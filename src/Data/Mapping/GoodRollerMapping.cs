@@ -1,4 +1,4 @@
-using Data.Models;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Mapping;

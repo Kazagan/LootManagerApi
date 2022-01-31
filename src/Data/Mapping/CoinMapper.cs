@@ -1,5 +1,5 @@
+using Data.Entities;
 using Data.Enums;
-using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Mapping;
