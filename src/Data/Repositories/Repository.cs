@@ -8,6 +8,7 @@ public interface IRepository<TContext> where TContext : DbContext
     void Insert<TEntity>(TEntity entity) where TEntity : class;
     void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
     void Delete<TEntity>(TEntity entity) where TEntity : class;
+    void Update<TEntity>(TEntity entity) where TEntity : class;
     void Save();
 }
 public class Repository<TContext> : IRepository<TContext> where TContext : DbContext
@@ -29,6 +30,11 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
     public void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
     {
         Context.Set<TEntity>().AddRange(entities);
+    }
+
+    public void Update<TEntity>(TEntity entity) where TEntity : class
+    {
+        Context.Update(entity);
     }
 
     public void Delete<TEntity>(TEntity entity) where TEntity : class

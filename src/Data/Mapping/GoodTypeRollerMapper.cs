@@ -1,25 +1,20 @@
 using Data.Entities;
-using Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Mapping;
 
 public static class GoodTypeRollerMapper
 {
-    public static void MapGoodType(this ModelBuilder modelBuilder)
+    public static void MapGoodTypeRoller(this ModelBuilder modelBuilder)
     {
-        var typeLength = SharedFunctions.GetEnumMaxLength<GoodType>();
         modelBuilder.Entity<GoodTypeRoller>(entity =>
         {
             entity
                 .HasKey(e => e.Id);
 
             entity
-                .Property(e => e.Type)
-                .HasConversion<string>()
-                .IsRequired()
-                .HasMaxLength(typeLength);
-            
+                .HasOne(e => e.GoodType);
+
             entity
                 .Property(e => e.TreasureLevel)
                 .IsRequired(); 

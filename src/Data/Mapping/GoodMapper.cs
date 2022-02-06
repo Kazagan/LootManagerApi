@@ -1,5 +1,4 @@
 using Data.Entities;
-using Data.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Mapping;
@@ -8,8 +7,6 @@ public static class GoodMapper
 {
     public static void MapGoods(this ModelBuilder modelBuilder)
     {
-        var length = SharedFunctions.GetEnumMaxLength<GoodType>();
-        
         modelBuilder.Entity<Good>(entity =>
         {
             entity
@@ -24,10 +21,7 @@ public static class GoodMapper
                 .HasMaxLength(250);
 
             entity
-                .Property(e => e.Type)
-                .HasConversion<string>()
-                .IsRequired()
-                .HasMaxLength(length);
+                .HasOne(e => e.GoodType);
         });
     }
 }

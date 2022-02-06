@@ -1,40 +1,73 @@
-using System.Linq;
 using Data.Entities;
 using Data.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Manager.Services;
 
 public class CoinService
 {
-    private readonly IRepository<ManagerContext> _repository;
+    private IRepository<ManagerContext> _repository;
 
     public CoinService(IRepository<ManagerContext> repository)
     {
         _repository = repository;
     }
 
-    public Coin Get(int treasureLevel, int roll)
+    public IEnumerable<Coin> GetAll()
     {
-        var coinRoll = GetCoin(treasureLevel, roll);
-
-        if (coinRoll?.Coin is null)
-            return new Coin();
-
-        var output = coinRoll.Coin;
-        output.Count = SharedFunctions.GetValue(coinRoll.DiceCount, coinRoll.DiceSides, coinRoll.Multiplier);
-        return output;
+        return _repository.Get<Coin>();
     }
 
-    private CoinRoller? GetCoin(int treasureLevel, int roll)
+    public Coin? Get(int id)
     {
-        var x =  _repository
-            .Get<CoinRoller>()
-            .Include(x => x.Coin)
-            .OrderBy(x => x.RollMin)
-            .LastOrDefault(x => 
-                x.TreasureLevel == treasureLevel
-                && roll >= x.RollMin);
-        return x;
+        return _repository
+            .Get<Coin>()
+            .FirstOrDefault(x => x.Id == id);
+    }
+
+    public Coin? Get(string name)
+    {
+        return _repository
+            .Get<Coin>()
+            .FirstOrDefault(x => x.Name == name);
+    }
+
+    public Coin? Create(string name, double inGold)
+    {
+        if (Get(name) is not null)
+        {
+            return null;
+        }
+        var newCoin = new Coin {Name = name, InGold = inGold};
+        _repository.Insert(newCoin);
+        _repository.Save();
+        return newCoin;
+    }
+
+    public Coin Update(int id, string? name, double? inGold)
+    {
+        if (!IsValidUpdate(id, name))
+        {
+            return new Coin() { Id = -1};
+        }
+        var coin = Get(id);
+        if (coin is null)
+        {
+            return new Coin {Id = 0};
+        }
+
+        coin.Name = name ?? coin.Name;
+        coin.InGold = inGold ?? coin.InGold;
+        _repository.Update(coin);
+        _repository.Save();
+        return coin;
+    }
+
+    private bool IsValidUpdate(int id, string? name)
+    {
+        if (name is null)
+            return true;
+        
+        var coinByName = Get(name);
+        return coinByName is null || coinByName.Id == id;
     }
 }

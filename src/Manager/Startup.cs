@@ -1,27 +1,28 @@
 using Data.Repositories;
-using Manager.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manager;
 
-public static class Startup
+public class Startup
 {
-    public static void Run()
+    private IConfiguration _configuration;
+    public Startup(IConfiguration configuration)
     {
-        var repo = new Repository<ManagerContext>(new ManagerContext());
-        var coinService = new CoinService(repo);
-        var roller = new Roller(coinService);
+        _configuration = configuration;
+    }
 
-        var input = "";
-        while (input != "exit")
-        {
-            input = Console.ReadLine();
-            if (!int.TryParse(input, out var treasureLevel))
-            {
-                Console.WriteLine("Input was not a number, try again");
-            }
+    private void ConfigureServices(IServiceCollection services)
+    {
 
-            var result = roller.Roll(treasureLevel);
-            Console.WriteLine($"Cash Roll: {result.Cash.Count} {result.Cash.CoinType}");
-        }
+        services.AddControllers();
+        services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
+        
+        services.BindServices();
+        services.AddDbContext<ManagerContext>(
+            options => options.UseSqlServer(
+                _configuration.GetConnectionString("manager"),
+                builder => builder.SqlOptions()
+            ));
     }
 }
