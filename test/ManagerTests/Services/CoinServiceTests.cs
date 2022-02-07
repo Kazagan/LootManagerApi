@@ -118,6 +118,32 @@ public class CoinServiceTests
     }
 
     [Fact]
+    public void ShouldUpdateBothWhenBothChanged()
+    {
+        var coins = _fixture.CreateMany<Coin>(10).ToList();
+        var sample = coins.First();
+
+        SetupRepoMock(coins);
+
+        const decimal newInGold = 10;
+        const string rename = "ne name";
+        var result = _sut.Update(sample.Id, rename, newInGold);
+        result.InGold.Should().Be(newInGold);
+        result.Name.Should().Be(rename);
+    }
+
+    [Fact]
+    public void ShouldNotChangeIfNullPassed()
+    {
+        var coins = _fixture.CreateMany<Coin>(10).ToList();
+        var sample = coins.First();
+
+        SetupRepoMock(coins);
+        var result = _sut.Update(sample.Id, null, null);
+        sample.Should().BeEquivalentTo(result);
+    }
+
+    [Fact]
     public void ShouldCallDeleteForExpectedCoinWhenIdFound()
     {
         var coins = _fixture.CreateMany<Coin>().ToList();
