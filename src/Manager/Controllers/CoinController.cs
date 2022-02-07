@@ -1,3 +1,4 @@
+using Data.Entities;
 using Data.Repositories;
 using Manager.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,43 +16,51 @@ public class CoinController : ControllerBase
     }
 
     [HttpGet]
+    [Route("All")]
     public IActionResult Get()
     {
         return Ok(_service.GetAll());
     }
 
     [HttpGet]
+    [Route("name/{name}")]
     public IActionResult Get(string name)
     {
         return Ok(_service.Get(name));
     }
 
     [HttpGet]
+    [Route("id/{id}")]
     public IActionResult Get(int id)
     {
         return Ok(_service.Get(id));
     }
 
     [HttpPut]
-    public IActionResult Put(string name, double inGold)
+    public IActionResult Put(string name, decimal inGold)
     {
-        var x = _service.Create(name, inGold);
-        if (x is null)
+        var coin = _service.Create(name, inGold);
+        if (coin is null)
         {
-            return BadRequest("Coin Type already exists");
+            return Conflict("Coin Type already exists");
         }
-        return Ok();
+        return Created(coin.Id.ToString(), coin);
+    }
+    [HttpPost]
+    public IActionResult Post(int id, string? name, decimal inGold)
+    {
+        var coin = _service.Update(id, name, inGold);
+        return coin.Id switch
+        {
+            -1 => NotFound("Coin not found."),
+            0 => Conflict("Coin with that name already exists."),
+            _ => Accepted(coin)
+        };
     }
 
-    [HttpPost]
-    public IActionResult Post(int id, string? name, double? inGold)
+    [HttpDelete]
+    public IActionResult Delete(int id)
     {
-        var x = _service.Update(id, name, inGold);
-        return x.Id switch
-        {
-            0 => BadRequest("Coin Not Found"),
-            -1 => BadRequest("Coin Type already exists"),
-            _ => Ok(x)
-        };
+        return _service.Delete((int) id) ? Ok("Coin Deleted") : NotFound($"Coin not found for {id}.");
     }
 }

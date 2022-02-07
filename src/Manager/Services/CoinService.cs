@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Data.Entities;
 using Data.Repositories;
 
@@ -31,9 +33,9 @@ public class CoinService
             .FirstOrDefault(x => x.Name == name);
     }
 
-    public Coin? Create(string name, double inGold)
+    public Coin? Create(string name, decimal inGold)
     {
-        if (Get(name) is not null)
+        if (NameTaken(name))
         {
             return null;
         }
@@ -43,18 +45,17 @@ public class CoinService
         return newCoin;
     }
 
-    public Coin Update(int id, string? name, double? inGold)
+    public Coin Update(int id, string? name, decimal? inGold)
     {
-        if (!IsValidUpdate(id, name))
-        {
-            return new Coin() { Id = -1};
-        }
         var coin = Get(id);
         if (coin is null)
         {
+            return new Coin {Id = -1};
+        }
+        if (!coin.Name.Equals(name, StringComparison.Ordinal) && !string.IsNullOrEmpty(name) && NameTaken(name ?? ""))
+        {
             return new Coin {Id = 0};
         }
-
         coin.Name = name ?? coin.Name;
         coin.InGold = inGold ?? coin.InGold;
         _repository.Update(coin);
@@ -62,12 +63,20 @@ public class CoinService
         return coin;
     }
 
-    private bool IsValidUpdate(int id, string? name)
+    public bool Delete(int id)
     {
-        if (name is null)
-            return true;
-        
-        var coinByName = Get(name);
-        return coinByName is null || coinByName.Id == id;
+        var coin = Get(id);
+        if (coin is null)
+        {
+            return false;
+        }
+        _repository.Delete(coin);
+        _repository.Save();
+        return true;
+    }
+    
+    private bool NameTaken(string name)
+    {
+        return Get(name) is not null;
     }
 }

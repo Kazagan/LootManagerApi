@@ -15,7 +15,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     InGold = table.Column<double>(type: "float(4)", precision: 4, scale: 4, nullable: false),
-                    CoinTypeId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -23,18 +23,16 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GoodTypeRoller",
+                name: "GoodType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TreasureLevel = table.Column<int>(type: "int", nullable: false),
-                    RollMin = table.Column<int>(type: "int", nullable: false),
-                    GoodTypeId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GoodTypeRoller", x => x.Id);
+                    table.PrimaryKey("PK_GoodType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,24 +59,6 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CoinType",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CoinType", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CoinType_Coin_Id",
-                        column: x => x.Id,
-                        principalTable: "Coin",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Good",
                 columns: table => new
                 {
@@ -95,6 +75,33 @@ namespace Data.Migrations
                         name: "FK_Good_Coin_ValueId",
                         column: x => x.ValueId,
                         principalTable: "Coin",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Good_GoodType_GoodTypeId",
+                        column: x => x.GoodTypeId,
+                        principalTable: "GoodType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GoodTypeRoller",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TreasureLevel = table.Column<int>(type: "int", nullable: false),
+                    RollMin = table.Column<int>(type: "int", nullable: false),
+                    GoodTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GoodTypeRoller", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GoodTypeRoller_GoodType_GoodTypeId",
+                        column: x => x.GoodTypeId,
+                        principalTable: "GoodType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -122,34 +129,15 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "GoodType",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GoodType", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GoodType_Good_Id",
-                        column: x => x.Id,
-                        principalTable: "Good",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GoodType_GoodTypeRoller_Id",
-                        column: x => x.Id,
-                        principalTable: "GoodTypeRoller",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_CoinRoller_CoinId",
                 table: "CoinRoller",
                 column: "CoinId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Good_GoodTypeId",
+                table: "Good",
+                column: "GoodTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Good_ValueId",
@@ -160,6 +148,11 @@ namespace Data.Migrations
                 name: "IX_GoodRoller_GoodId",
                 table: "GoodRoller",
                 column: "GoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GoodTypeRoller_GoodTypeId",
+                table: "GoodTypeRoller",
+                column: "GoodTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -168,22 +161,19 @@ namespace Data.Migrations
                 name: "CoinRoller");
 
             migrationBuilder.DropTable(
-                name: "CoinType");
-
-            migrationBuilder.DropTable(
                 name: "GoodRoller");
-
-            migrationBuilder.DropTable(
-                name: "GoodType");
-
-            migrationBuilder.DropTable(
-                name: "Good");
 
             migrationBuilder.DropTable(
                 name: "GoodTypeRoller");
 
             migrationBuilder.DropTable(
+                name: "Good");
+
+            migrationBuilder.DropTable(
                 name: "Coin");
+
+            migrationBuilder.DropTable(
+                name: "GoodType");
         }
     }
 }

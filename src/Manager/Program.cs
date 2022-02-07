@@ -8,10 +8,15 @@ public static class Program
         {
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         }
-        CreateHost(args).Build().Run();
+        CreateHost(args)
+            .Build()
+            .Run();
     }
 
     private static IHostBuilder CreateHost(string[] args) =>
-    Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }

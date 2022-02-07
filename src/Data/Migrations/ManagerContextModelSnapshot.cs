@@ -30,16 +30,16 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CoinTypeId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("InGold")
+                        .HasPrecision(10, 4)
+                        .HasColumnType("decimal(10,4)");
 
-                    b.Property<double>("InGold")
-                        .HasPrecision(4, 4)
-                        .HasColumnType("float(4)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CoinTypeId");
 
                     b.ToTable("Coin");
                 });
@@ -75,24 +75,6 @@ namespace Data.Migrations
                     b.HasIndex("CoinId");
 
                     b.ToTable("CoinRoller");
-                });
-
-            modelBuilder.Entity("Data.Entities.CoinType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CoinType");
                 });
 
             modelBuilder.Entity("Data.Entities.Good", b =>
@@ -193,17 +175,6 @@ namespace Data.Migrations
                     b.HasIndex("GoodTypeId");
 
                     b.ToTable("GoodTypeRoller");
-                });
-
-            modelBuilder.Entity("Data.Entities.Coin", b =>
-                {
-                    b.HasOne("Data.Entities.CoinType", "CoinType")
-                        .WithMany()
-                        .HasForeignKey("CoinTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CoinType");
                 });
 
             modelBuilder.Entity("Data.Entities.CoinRoller", b =>

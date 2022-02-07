@@ -36,15 +36,15 @@ public class CoinServiceTests
     [Fact]
     public void ShouldCallSave()
     {
-        _sut.Create("Test", .01);
+        _sut.Create("Test", (decimal).01);
         _repository.Verify(x => x.Save(), Times.Once);
     }
 
     [Fact]
     public void ShouldSaveWithExpectedNameAndValue()
     {
-        var expected = new Coin {Name = "test", InGold = .01};
-        Coin actual = null;
+        var expected = new Coin {Name = "test", InGold = (decimal).01};
+        Coin? actual = null;
         _repository
             .Setup(x => x.Insert(It.IsAny<Coin>()))
             .Callback<Coin>(x => actual = x);
@@ -74,30 +74,15 @@ public class CoinServiceTests
 
         SetupRepoMock(coins);
 
-        const double newInGold = 10;
+        const decimal newInGold = 10;
         var result = _sut.Update(sample.Id, sample.Name, newInGold);
         result.InGold.Should().Be(newInGold);
-    }
-    
-    [Fact]
-    public void ShouldCallUpdateBothInGoldAndName()
-    {
-        var coins = _fixture.CreateMany<Coin>(10).ToList();
-        var sample = coins.First();
-
-        SetupRepoMock(coins);
-
-        const double newInGold = 10;
-        const string rename = "test";
-        var result = _sut.Update(sample.Id, rename, newInGold);
-        result.InGold.Should().Be(newInGold);
-        result.Name.Should().Be(rename);
     }
 
     [Fact]
     public void ShouldReturnCoinIfIdExists()
     {
-        var coins = _fixture.CreateMany<Coin>();
+        var coins = _fixture.CreateMany<Coin>().ToList();
         SetupRepoMock(coins);
         var sample = coins.First();
         var result = _sut.Get(sample.Id);
@@ -107,7 +92,7 @@ public class CoinServiceTests
     [Fact]
     public void ShouldReturnCoinIfNameExists()
     {
-        var coins = _fixture.CreateMany<Coin>();
+        var coins = _fixture.CreateMany<Coin>().ToList();
         SetupRepoMock(coins);
         var sample = coins.First();
         var result = _sut.Get(sample.Name);
@@ -132,12 +117,34 @@ public class CoinServiceTests
         result.Should().BeNull();
     }
 
+    [Fact]
+    public void ShouldCallDeleteForExpectedCoinWhenIdFound()
+    {
+        var coins = _fixture.CreateMany<Coin>().ToList();
+        SetupRepoMock(coins);
+        var sample = coins.First();
+
+        _sut.Delete(sample.Id);
+        _repository
+            .Verify(x => x.Delete(It.IsAny<Coin>()), Times.Once);
+    }
+
+    [Fact]
+    public void ShouldNotCallDeleteWhenNotFound()
+    {
+        var coins = _fixture.CreateMany<Coin>();
+        SetupRepoMock(coins);
+        _repository
+            .Verify(x => x.Delete(It.IsAny<Coin>()), Times.Never);
+
+        _sut.Delete(0);
+        _repository.VerifyAll();
+    }
+
     private void SetupRepoMock(IEnumerable<Coin> coins)
     {
         _repository
             .Setup(x => x.Get<Coin>())
             .Returns(coins.AsQueryable);
-    }
-    
-    
+    }   
 }
