@@ -1,0 +1,62 @@
+Using project '/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj'.
+Using startup project '/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj'.
+Writing '/home/spaige/workspace/programming/cshp/LootManager/src/Data/obj/Data.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=/tmp/tmp1udJ8P.tmp /verbosity:quiet /nologo /home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj
+Writing '/home/spaige/workspace/programming/cshp/LootManager/src/Data/obj/Data.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=/tmp/tmpoMq09R.tmp /verbosity:quiet /nologo /home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj
+Build started...
+dotnet build /home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj /verbosity:quiet /nologo
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Coin.cs(8,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(6,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodTypeRoller.cs(8,21): warning CS8618: Non-nullable property 'GoodType' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(7,17): warning CS8618: Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(8,21): warning CS8618: Non-nullable property 'GoodType' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodType.cs(6,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodRoller.cs(10,17): warning CS8618: Non-nullable property 'Good' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+
+Build succeeded.
+
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Coin.cs(8,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(6,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodTypeRoller.cs(8,21): warning CS8618: Non-nullable property 'GoodType' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(7,17): warning CS8618: Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/Good.cs(8,21): warning CS8618: Non-nullable property 'GoodType' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodType.cs(6,19): warning CS8618: Non-nullable property 'Name' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+/home/spaige/workspace/programming/cshp/LootManager/src/Data/Entities/GoodRoller.cs(10,17): warning CS8618: Non-nullable property 'Good' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj]
+    7 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.90
+Build succeeded.
+dotnet exec --depsfile /home/spaige/workspace/programming/cshp/LootManager/src/Data/bin/Debug/net6.0/Data.deps.json --additionalprobingpath /home/spaige/.nuget/packages --runtimeconfig /home/spaige/workspace/programming/cshp/LootManager/src/Data/bin/Debug/net6.0/Data.runtimeconfig.json /home/spaige/.dotnet/tools/.store/dotnet-ef/6.0.1/dotnet-ef/6.0.1/tools/netcoreapp3.1/any/tools/netcoreapp2.0/any/ef.dll migrations add changes --assembly /home/spaige/workspace/programming/cshp/LootManager/src/Data/bin/Debug/net6.0/Data.dll --project /home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj --startup-assembly /home/spaige/workspace/programming/cshp/LootManager/src/Data/bin/Debug/net6.0/Data.dll --startup-project /home/spaige/workspace/programming/cshp/LootManager/src/Data/Data.csproj --project-dir /home/spaige/workspace/programming/cshp/LootManager/src/Data/ --root-namespace Data --language C# --framework net6.0 --nullable --working-dir /home/spaige/workspace/programming/cshp/LootManager --verbose
+Using assembly 'Data'.
+Using startup assembly 'Data'.
+Using application base '/home/spaige/workspace/programming/cshp/LootManager/src/Data/bin/Debug/net6.0'.
+Using working directory '/home/spaige/workspace/programming/cshp/LootManager/src/Data'.
+Using root namespace 'Data'.
+Using project directory '/home/spaige/workspace/programming/cshp/LootManager/src/Data/'.
+Remaining arguments: .
+Finding DbContext classes...
+Finding IDesignTimeDbContextFactory implementations...
+Finding application service provider in assembly 'Data'...
+Finding Microsoft.Extensions.Hosting service provider...
+No static method 'CreateHostBuilder(string[])' was found on class 'Program'.
+No application service provider was found.
+Finding DbContext classes in the project...
+Found DbContext 'ManagerContext'.
+Microsoft.EntityFrameworkCore.Design.OperationException: Unable to create an object of type 'ManagerContext'. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728
+ ---> System.InvalidOperationException: Unable to resolve service for type 'Microsoft.EntityFrameworkCore.DbContextOptions`1[Data.Repositories.ManagerContext]' while attempting to activate 'Data.Repositories.ManagerContext'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ConstructorMatcher.CreateInstance(IServiceProvider provider)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance(IServiceProvider provider, Type instanceType, Object[] parameters)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetServiceOrCreateInstance(IServiceProvider provider, Type type)
+   at Microsoft.EntityFrameworkCore.Design.Internal.DbContextOperations.<>c__DisplayClass21_4.<FindContextTypes>b__13()
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Design.Internal.DbContextOperations.<>c__DisplayClass21_4.<FindContextTypes>b__13()
+   at Microsoft.EntityFrameworkCore.Design.Internal.DbContextOperations.CreateContext(Func`1 factory)
+   at Microsoft.EntityFrameworkCore.Design.Internal.DbContextOperations.CreateContext(String contextType)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.AddMigration(String name, String outputDir, String contextType, String namespace)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.AddMigrationImpl(String name, String outputDir, String contextType, String namespace)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.AddMigration.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.<>c__DisplayClass3_0`1.<Execute>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+Unable to create an object of type 'ManagerContext'. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

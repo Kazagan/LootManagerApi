@@ -1,21 +1,48 @@
-using Manager.Models;
+using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manager;
 
 public class Startup
 {
-
-    public Startup()
+    private readonly IConfiguration _configuration;
+    public Startup(IConfiguration configuration)
     {
+        _configuration = configuration;
     }
 
-    public void Write(Item item)
+    public void ConfigureServices(IServiceCollection services)
     {
-        Console.WriteLine("Hello");
+        services.BindRepositories();
+        services.AddControllers();
+        services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
+        
+        // services.BindServices();
+        services.AddHttpClient();
+        
+        services.AddDbContext<ManagerContext>(
+            options => options.UseSqlServer(
+                _configuration.GetConnectionString("manager"),
+                builder => builder.SqlOptions()
+            ));
     }
 
-    public void Read()
+    public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        Console.WriteLine("World");
+        app.UseAuthentication();
+        if (env.IsDevelopment() || env.EnvironmentName.Equals("Docker", StringComparison.Ordinal))
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/", "Manager V1"));
+        }
+
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
