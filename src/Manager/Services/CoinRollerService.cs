@@ -16,9 +16,17 @@ public class CoinRollerService
 
     public CoinRoller? Get(int treasureLevel, int roll)
     {
-        return _repository.Get<CoinRoller>()
+        return GetAll()
             .Where(x => x.TreasureLevel == treasureLevel)
             .OrderBy(x => x.RollMin)
             .LastOrDefault(x => x.RollMin < roll);
     }
+
+    public CoinRoller Create(CoinRoller coinRoller)
+    {
+        
+    }
+
+    private CoinRoller? GetRoll(int treasureLevel, int rollMin) => 
+        GetAll().FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.RollMin == rollMin);
 }

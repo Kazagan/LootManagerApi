@@ -60,12 +60,19 @@ public class CoinRollerServiceTests
         _sut.Get(1, testRollMin).Should().BeEquivalentTo(expected);
     }
 
-    // [Fact]
-    // public void ShouldCallInsertOnExpected()
-    // {
-    //     var roller = _fixture.Create<CoinRoller>();
-    //     
-    // }
+    [Fact]
+    public void ShouldCallInsertOnExpected()
+    {
+        var roller = _fixture.Create<CoinRoller>();
+        _sut.Create(roller);
+        CoinRoller? inserted = null;
+        _repository.Setup(x => x.Insert(It.IsAny<Coin>()))
+            .Callback<CoinRoller>(x => inserted = x )
+            .Verifiable();
+        inserted.Should().BeEquivalentTo(roller);
+        _repository.Setup(x => x.Save())
+            .Verifiable();
+    }
 
     private void SetUpMock(IEnumerable<CoinRoller> rollers)
     {
