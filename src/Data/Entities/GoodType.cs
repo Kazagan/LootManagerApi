@@ -1,7 +1,6 @@
 namespace Data.Entities;
 
-public class GoodType
+public class GoodType : Entity
 {
-    public int Id { get; set; }
     public string Name { get; set; }
 }

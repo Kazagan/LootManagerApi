@@ -2,6 +2,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5a439216_002D4240_002D44df_002D86cf_002D42451d71c12b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CoinServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::22927F93-6B61-4245-88B8-7D3B57F6FCE4::net6.0::LootManagerTests.Services.CoinServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::22927F93-6B61-4245-88B8-7D3B57F6FCE4::net6.0::LootManagerTests.Services.CoinRollerServiceTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8ac308e4_002D18e6_002D4c5d_002D881e_002D9e1e491081c6/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" Name="ShouldCallUpdateWithExpectedNewInGold" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

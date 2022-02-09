@@ -1,8 +1,7 @@
 namespace Data.Entities;
 
-public class Coin
+public class Coin : Entity
 {
-    public int Id { get; set; }
     public decimal? InGold { get; set; }
     public int Count { get; set; }
     public string? Name { get; set; }

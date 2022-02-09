@@ -6,24 +6,16 @@ namespace Manager.Services;
 
 public class CoinService
 {
-    private IRepository<ManagerContext> _repository;
+    private readonly IRepository<ManagerContext> _repository;
 
     public CoinService(IRepository<ManagerContext> repository)
     {
         _repository = repository;
     }
 
-    public IEnumerable<Coin> GetAll()
-    {
-        return _repository.Get<Coin>();
-    }
+    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
 
-    public Coin? Get(int id)
-    {
-        return _repository
-            .Get<Coin>()
-            .FirstOrDefault(x => x.Id == id);
-    }
+    public Coin? Get(int id) => _repository.Get<Coin>(id);
 
     public Coin? Get(string name)
     {
