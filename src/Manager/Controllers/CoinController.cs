@@ -30,30 +30,35 @@ public class CoinController : ControllerBase
     }
 
     [HttpGet]
-    [Route("id/{id}")]
+    [Route("{id}")]
     public IActionResult Get(int id)
     {
         return Ok(_service.Get(id));
     }
 
     [HttpPut]
-    public IActionResult Put(string name, decimal inGold)
+    public IActionResult Put([FromBody] Coin input)
     {
-        var coin = _service.Create(name, inGold);
-        if (coin is null)
+        var coin = _service.Create(input);
+        return coin.Id switch
         {
-            return Conflict("Coin Type already exists");
-        }
-        return Created(coin.Id.ToString(), coin);
+            -1 => BadRequest("Invalid format passed, must pass Name and inGold"),
+            0 => Conflict($"Coin Type {input.Name} already exists"),
+            _ => Ok(coin)
+        };
     }
     [HttpPost]
-    public IActionResult Post(int id, string? name, decimal inGold)
+    public IActionResult Post([FromBody]Coin input)
     {
-        var coin = _service.Update(id, name, inGold);
+        if (input.Id == 0)
+        {
+            return BadRequest("Must provide id of valid coin");
+        }
+        var coin = _service.Update(input);
         return coin.Id switch
         {
             -1 => NotFound("Coin not found."),
-            0 => Conflict("Coin with that name already exists."),
+            0 => Conflict($"Coin Type {input.Name} already exists"),
             _ => Accepted(coin)
         };
     }
@@ -61,6 +66,6 @@ public class CoinController : ControllerBase
     [HttpDelete]
     public IActionResult Delete(int id)
     {
-        return _service.Delete((int) id) ? Ok("Coin Deleted") : NotFound($"Coin not found for {id}.");
+        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found for {id}.");
     }
 }

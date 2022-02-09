@@ -36,7 +36,7 @@ public class CoinServiceTests
     [Fact]
     public void ShouldCallSave()
     {
-        _sut.Create("Test", (decimal).01);
+        _sut.Create(_fixture.Create<Coin>());
         _repository.Verify(x => x.Save(), Times.Once);
     }
 
@@ -48,7 +48,7 @@ public class CoinServiceTests
         _repository
             .Setup(x => x.Insert(It.IsAny<Coin>()))
             .Callback<Coin>(x => actual = x);
-        _sut.Create(expected.Name, expected.InGold);
+        _sut.Create(expected);
         actual?.Name.Should().BeEquivalentTo(expected.Name);
         actual?.InGold.Should().Be(expected.InGold);
     }
@@ -61,9 +61,9 @@ public class CoinServiceTests
 
         SetupRepoMock(coins);
 
-        const string rename = "newName";
-        var result = _sut.Update(sample.Id, rename, sample.InGold);
-        result.Name.Should().Be(rename);
+        sample.Name = "newName";
+        var result = _sut.Update(sample);
+        result.Name.Should().Be(sample.Name);
     }
     
     [Fact]
@@ -74,9 +74,9 @@ public class CoinServiceTests
 
         SetupRepoMock(coins);
 
-        const decimal newInGold = 10;
-        var result = _sut.Update(sample.Id, sample.Name, newInGold);
-        result.InGold.Should().Be(newInGold);
+        sample.InGold = 10;
+        var result = _sut.Update(sample);
+        result.InGold.Should().Be(sample.InGold);
     }
 
     [Fact]
@@ -125,11 +125,11 @@ public class CoinServiceTests
 
         SetupRepoMock(coins);
 
-        const decimal newInGold = 10;
-        const string rename = "ne name";
-        var result = _sut.Update(sample.Id, rename, newInGold);
-        result.InGold.Should().Be(newInGold);
-        result.Name.Should().Be(rename);
+        sample.InGold = 10;
+        sample.Name = "new name";
+        var result = _sut.Update(sample);
+        result.InGold.Should().Be(sample.InGold);
+        result.Name.Should().Be(sample.Name);
     }
 
     [Fact]
@@ -139,7 +139,9 @@ public class CoinServiceTests
         var sample = coins.First();
 
         SetupRepoMock(coins);
-        var result = _sut.Update(sample.Id, null, null);
+        sample.Name = null;
+        sample.InGold = null;
+        var result = _sut.Update(sample);
         sample.Should().BeEquivalentTo(result);
     }
 

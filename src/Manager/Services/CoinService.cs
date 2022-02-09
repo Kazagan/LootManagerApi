@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Data.Entities;
 using Data.Repositories;
@@ -33,32 +32,38 @@ public class CoinService
             .FirstOrDefault(x => x.Name == name);
     }
 
-    public Coin? Create(string name, decimal inGold)
+    public Coin Create(Coin coin)
     {
-        if (NameTaken(name))
+        if (string.IsNullOrEmpty(coin.Name) || coin.InGold is null)
         {
-            return null;
+            return new Coin {Id = -1};
         }
-        var newCoin = new Coin {Name = name, InGold = inGold};
+        if (NameTaken(coin.Name))
+        {
+            return new Coin {Id = 0};
+        }
+        var newCoin = new Coin {Name = coin.Name, InGold = coin.InGold};
         _repository.Insert(newCoin);
         _repository.Save();
         return newCoin;
     }
 
-    public Coin Update(int id, string? name, decimal? inGold)
+    public Coin Update(Coin coin)
     {
-        var coin = Get(id);
-        if (coin is null)
+        var original = Get(coin.Id);
+        if (original is null)
         {
             return new Coin {Id = -1};
         }
-        if (!coin.Name.Equals(name, StringComparison.Ordinal) && !string.IsNullOrEmpty(name) && NameTaken(name ?? ""))
+        
+        if (IsNewNameAndValid(coin, original) )
         {
             return new Coin {Id = 0};
         }
-        coin.Name = name ?? coin.Name;
-        coin.InGold = inGold ?? coin.InGold;
-        _repository.Update(coin);
+
+        original.Name = coin.Name ?? original.Name;
+        original.InGold = coin.InGold ?? original.InGold;
+        _repository.Update(original);
         _repository.Save();
         return coin;
     }
@@ -78,5 +83,13 @@ public class CoinService
     private bool NameTaken(string name)
     {
         return Get(name) is not null;
+    }
+    
+
+    private bool IsNewNameAndValid(Coin coin, Coin original)
+    {
+        return original.Name != coin.Name 
+               && !string.IsNullOrEmpty(coin.Name) 
+               && NameTaken(coin.Name);
     }
 }
