@@ -44,9 +44,10 @@ public class CoinController : ControllerBase
         {
             -1 => BadRequest("Invalid format passed, must pass Name and inGold"),
             0 => Conflict($"Coin Type {input.Name} already exists"),
-            _ => Ok(coin)
+            _ => Ok("Coin successfully Created")
         };
     }
+    
     [HttpPost]
     public IActionResult Post([FromBody]Coin input)
     {

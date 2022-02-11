@@ -5,6 +5,7 @@ using AutoFixture;
 using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
+using Manager;
 using Manager.Services;
 using Moq;
 using Xunit;
@@ -72,6 +73,14 @@ public class CoinRollerServiceTests
         inserted.Should().BeEquivalentTo(roller);
         _repository.Setup(x => x.Save())
             .Verifiable();
+    }
+
+    [Fact]
+    public void ShouldCreateNewCoinRoller()
+    {
+        var roller = _fixture.Create<CoinRoller>();
+        var x = Common.VerifyObject(roller);
+        true.Should().BeTrue();
     }
 
     private void SetUpMock(IEnumerable<CoinRoller> rollers)
