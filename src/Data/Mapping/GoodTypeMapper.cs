@@ -13,7 +13,7 @@ public static class GoodTypeMapper
                 .HasKey(e => e.Id);
             entity
                 .Property(e => e.Name)
-                .HasMaxLength(250)
+                .VarcharWithMaxLength(250)
                 .IsRequired();
         });
     }

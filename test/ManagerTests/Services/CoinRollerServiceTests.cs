@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using AutoFixture;
 using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
-using Manager;
 using Manager.Services;
 using Moq;
 using Xunit;
