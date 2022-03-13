@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Manager.Controllers;
 
 [Route("[Controller")]
-public class CoinRollerController
+public class CoinRollerController : ControllerBase
 {
     private readonly CoinRollerService _service;
 
@@ -19,6 +19,6 @@ public class CoinRollerController
     public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
         var roller = _service.Create(coinRoller);
-        
+        return Ok();
     }
 }

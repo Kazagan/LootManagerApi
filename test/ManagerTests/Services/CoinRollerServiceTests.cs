@@ -65,21 +65,20 @@ public class CoinRollerServiceTests
     public void ShouldCallInsertOnExpected()
     {
         var roller = _fixture.Create<CoinRoller>();
-        _sut.Create(roller);
         CoinRoller? inserted = null;
-        _repository.Setup(x => x.Insert(It.IsAny<Coin>()))
+        _repository.Setup(x => x.Insert(It.IsAny<CoinRoller>()))
             .Callback<CoinRoller>(x => inserted = x )
             .Verifiable();
-        inserted.Should().BeEquivalentTo(roller);
         _repository.Setup(x => x.Save())
             .Verifiable();
+        _sut.Create(roller);
+        inserted.Should().BeEquivalentTo(roller);
     }
 
     [Fact]
     public void ShouldCreateNewCoinRoller()
     {
         var roller = _fixture.Create<CoinRoller>();
-        var x = Common.VerifyObject(roller);
         true.Should().BeTrue();
     }
 
