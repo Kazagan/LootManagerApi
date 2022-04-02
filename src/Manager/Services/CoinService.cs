@@ -6,9 +6,9 @@ namespace Manager.Services;
 
 public class CoinService
 {
-    private readonly IRepository<ManagerContext> _repository;
+    private readonly IRepository _repository;
 
-    public CoinService(IRepository<ManagerContext> repository)
+    public CoinService(IRepository repository)
     {
         _repository = repository;
     }

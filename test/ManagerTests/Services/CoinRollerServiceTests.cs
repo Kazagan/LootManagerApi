@@ -12,14 +12,14 @@ namespace LootManagerTests.Services;
 
 public class CoinRollerServiceTests
 {
-    private readonly Mock<IRepository<ManagerContext>> _repository;
+    private readonly Mock<IRepository> _repository;
     private readonly Fixture _fixture;
     private readonly CoinRollerService _sut;
     
     public CoinRollerServiceTests()
     {
         _fixture = new Fixture();
-        _repository = new Mock<IRepository<ManagerContext>>();
+        _repository = new Mock<IRepository>();
         _sut = new CoinRollerService(_repository.Object);
     }
 

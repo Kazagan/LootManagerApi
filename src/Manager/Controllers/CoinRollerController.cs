@@ -10,7 +10,7 @@ public class CoinRollerController : ControllerBase
 {
     private readonly CoinRollerService _service;
 
-    public CoinRollerController(IRepository<ManagerContext> repository)
+    public CoinRollerController(IRepository repository)
     {
         _service = new CoinRollerService(repository);
     }
@@ -42,11 +42,4 @@ public class CoinRollerController : ControllerBase
     //         _ => Ok(roller)
     //     };
     // }
-
-    [HttpPost]
-    public IActionResult Post([FromBody] Test test)
-    {
-        Console.WriteLine($"The test string is {test.Name}, value: {test.Value}");
-        return Ok();
-    }
 }

@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
 
-public interface IRepository<TContext> where TContext : DbContext
+public interface IRepository
 {
     IQueryable<TEntity> Get<TEntity>() where TEntity : Entity;
-    TEntity Get<TEntity>(Guid Id) where TEntity : Entity;
+    TEntity? Get<TEntity>(Guid id) where TEntity : Entity;
     void Insert<TEntity>(TEntity entity) where TEntity : Entity;
     void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity;
     void Delete<TEntity>(TEntity entity) where TEntity : Entity;
     void Update<TEntity>(TEntity entity) where TEntity : Entity;
     void Save();
 }
-public class Repository<TContext> : IRepository<TContext> where TContext : DbContext
+public class Repository<TContext> : IRepository where TContext : DbContext
 {
     private TContext Context { get; }
 

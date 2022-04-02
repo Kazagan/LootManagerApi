@@ -10,7 +10,7 @@ public class CoinController : ControllerBase
 {
     private readonly CoinService _service;
 
-    public CoinController(IRepository<ManagerContext> repository)
+    public CoinController(IRepository repository)
     {
         _service = new CoinService(repository);
     }

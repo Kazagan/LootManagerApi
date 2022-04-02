@@ -14,13 +14,13 @@ namespace LootManagerTests.Services;
 public class CoinServiceTests
 {
     private readonly CoinService _sut;
-    private readonly Mock<IRepository<ManagerContext>> _repository;
+    private readonly Mock<IRepository> _repository;
     private readonly Fixture _fixture;
 
     public CoinServiceTests()
     {
         _fixture = new Fixture();
-        _repository = new Mock<IRepository<ManagerContext>>();
+        _repository = new Mock<IRepository>();
         _sut = new CoinService(_repository.Object);
     }
 
@@ -133,7 +133,7 @@ public class CoinServiceTests
         var coin = _fixture.Create<Coin>();
 
         SetupRepoMock(coin);
-        coin.Name = null;
+        coin.Name = "";
         coin.InGold = 0;
         var result = _sut.Update(coin);
         coin.Should().BeEquivalentTo(result);

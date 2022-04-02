@@ -6,6 +6,7 @@ public class Good : Entity
     {
         Name = "";
         Coin = new Coin();
+        GoodType = new GoodType();
     }
     public string Name { get; set; }
     public Coin Coin { get; set; }
