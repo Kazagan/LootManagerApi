@@ -13,7 +13,7 @@ public static class GoodMapper
                 .HasKey(e => e.Id);
 
             entity
-                .HasOne(x => x.Value);
+                .HasOne(x => x.Coin);
 
             entity
                 .Property(e => e.Name)

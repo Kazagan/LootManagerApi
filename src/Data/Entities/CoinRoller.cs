@@ -2,6 +2,10 @@ namespace Data.Entities;
 
 public class CoinRoller : Entity
 {
+    public CoinRoller()
+    {
+        Coin = new Coin();
+    }
     public int TreasureLevel { get; set; }
     public int RollMin { get; set; }
     public Coin Coin { get; set; }

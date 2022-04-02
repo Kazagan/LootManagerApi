@@ -21,8 +21,6 @@ public static class CoinMapper
                 .Property(e => e.InGold)
                 .IsRequired()
                 .HasPrecision(10, 4);
-            entity
-                .Ignore(e => e.Count);
         });
     }
 }
