@@ -67,6 +67,8 @@ public class CoinRollerServiceTests
         _repository.Setup(x => x.Insert(It.IsAny<CoinRoller>()))
             .Callback<CoinRoller>(x => inserted = x )
             .Verifiable();
+        _repository.Setup(x => x.Get<Coin>(roller.Coin.Id))
+            .Returns(roller.Coin);
         _repository.Setup(x => x.Save())
             .Verifiable();
         _sut.Create(roller);

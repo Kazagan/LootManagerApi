@@ -6,7 +6,7 @@ namespace Data.Repositories;
 public interface IRepository<TContext> where TContext : DbContext
 {
     IQueryable<TEntity> Get<TEntity>() where TEntity : Entity;
-    TEntity Get<TEntity>(int id) where TEntity : Entity;
+    TEntity Get<TEntity>(Guid Id) where TEntity : Entity;
     void Insert<TEntity>(TEntity entity) where TEntity : Entity;
     void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity;
     void Delete<TEntity>(TEntity entity) where TEntity : Entity;
@@ -24,7 +24,7 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
         return Context.Set<TEntity>();
     }
 
-    public TEntity? Get<TEntity>(int id) where TEntity : Entity
+    public TEntity? Get<TEntity>(Guid id) where TEntity : Entity
     {
         return Context.Set<TEntity>().FirstOrDefault(x => x.Id == id);
     }

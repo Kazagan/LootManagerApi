@@ -7,13 +7,15 @@ namespace Manager.Services;
 public class CoinRollerService
 {
     private readonly IRepository<ManagerContext> _repository;
+    private readonly CoinService _coinService;
 
     public CoinRollerService(IRepository<ManagerContext> repository)
     {
         _repository = repository;
+        _coinService = new CoinService(_repository);
     }
     public IEnumerable<CoinRoller> GetAll() => _repository.Get<CoinRoller>();
-    public CoinRoller? Get(int id) => _repository.Get<CoinRoller>(id);
+    public CoinRoller? Get(Guid id) => _repository.Get<CoinRoller>(id);
 
     public CoinRoller? Get(int treasureLevel, int roll)
     {
@@ -25,18 +27,34 @@ public class CoinRollerService
 
     public CoinRoller Create(CoinRoller coinRoller)
     {
-        if (CheckRoller(coinRoller))
+        if (Exists(coinRoller))
         {
-            return new CoinRoller {Id = -1};
+            throw new Exception("Roller already exists for this treasure level and minimum");
         }
 
-        coinRoller.Coin = _repository.Get<Coin>(coinRoller.Coin.Id);
+        var coin = GetCoin(coinRoller.Coin);
+        if (coin is null)
+        {
+            throw new Exception("No Coin found for input.");
+        }
+
+        coinRoller.Coin = coin;
         _repository.Insert(coinRoller);
         _repository.Save();
         return coinRoller;
     }
 
-    private bool CheckRoller(CoinRoller coinRoller)
+    private Coin? GetCoin(Coin coin)
+    {
+        if (coin.Id != Guid.Empty)
+        {
+            return _coinService.Read(coin.Id);
+        }
+
+        return !string.IsNullOrEmpty(coin.Name) ? _coinService.Read(coin.Name) : null;
+    }
+
+    private bool Exists(CoinRoller coinRoller)
     {
         return GetRoll(coinRoller.TreasureLevel, coinRoller.RollMin) is not null;
     }

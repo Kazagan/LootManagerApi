@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
@@ -29,7 +30,7 @@ public class CoinServiceTests
         var coins = _fixture.CreateMany<Coin>(100).ToList();
         SetupRepoMock(coins);
 
-        var result = _sut.GetAll();
+        var result = _sut.ReadAll();
         result.Should().BeEquivalentTo(coins);
     }
 
@@ -80,7 +81,7 @@ public class CoinServiceTests
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
-        var result = _sut.Get(coin.Id);
+        var result = _sut.Read(coin.Id);
         result.Should().BeEquivalentTo(coin);
     }
     
@@ -90,7 +91,7 @@ public class CoinServiceTests
         var coins = _fixture.CreateMany<Coin>().ToList();
         SetupRepoMock(coins);
         var coin = coins.First();
-        var result = _sut.Get(coin.Name);
+        var result = _sut.Read(coin.Name);
         result.Should().BeEquivalentTo(coin);
     }
     
@@ -99,7 +100,7 @@ public class CoinServiceTests
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
-        var result = _sut.Get(-1);
+        var result = _sut.Read(new Guid());
         result.Should().BeNull();
     }
     
@@ -108,7 +109,7 @@ public class CoinServiceTests
     {
         var coins = _fixture.Create<Coin>();
         SetupRepoMock(coins);
-        var result = _sut.Get("");
+        var result = _sut.Read("");
         result.Should().BeNull();
     }
 
@@ -133,7 +134,7 @@ public class CoinServiceTests
 
         SetupRepoMock(coin);
         coin.Name = null;
-        coin.InGold = null;
+        coin.InGold = 0;
         var result = _sut.Update(coin);
         coin.Should().BeEquivalentTo(result);
     }
@@ -154,7 +155,7 @@ public class CoinServiceTests
     {
         var coins = _fixture.Create<Coin>();
         SetupRepoMock(coins);
-        _sut.Delete(0);
+        _sut.Delete(new Guid());
         _repository
             .Verify(x => x.Delete(It.IsAny<Coin>()), Times.Never);
     }

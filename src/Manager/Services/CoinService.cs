@@ -13,11 +13,11 @@ public class CoinService
         _repository = repository;
     }
 
-    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
+    public IEnumerable<Coin> ReadAll() => _repository.Get<Coin>();
 
-    public Coin? Get(int id) => _repository.Get<Coin>(id);
+    public Coin? Read(Guid id) => _repository.Get<Coin>(id);
 
-    public Coin? Get(string name)
+    public Coin? Read(string name)
     {
         return _repository
             .Get<Coin>()
@@ -26,13 +26,13 @@ public class CoinService
 
     public Coin Create(Coin coin)
     {
-        if (string.IsNullOrEmpty(coin.Name) || coin.InGold is null)
+        if (string.IsNullOrEmpty(coin.Name) || coin.InGold == 0)
         {
-            return new Coin {Id = -1};
+            throw new Exception("Name or in Gold Value not set");
         }
         if (NameTaken(coin.Name))
         {
-            return new Coin {Id = 0};
+            throw new Exception("Coin Name taken");
         }
         var newCoin = new Coin {Name = coin.Name, InGold = coin.InGold};
         _repository.Insert(newCoin);
@@ -42,27 +42,27 @@ public class CoinService
 
     public Coin Update(Coin coin)
     {
-        var original = Get(coin.Id);
+        var original = Read(coin.Id);
         if (original is null)
         {
-            return new Coin {Id = -1};
+            throw new Exception("Coin is Null");
         }
         
         if (IsNewNameAndValid(coin, original) )
         {
-            return new Coin {Id = 0};
+            throw new Exception("Coin name already exists, or is empty");
         }
 
-        original.Name = coin.Name ?? original.Name;
-        original.InGold = coin.InGold ?? original.InGold;
+        original.Name = string.IsNullOrEmpty(coin.Name) ? original.Name : coin.Name;
+        original.InGold = coin.InGold == 0 ? original.InGold : coin.InGold;
         _repository.Update(original);
         _repository.Save();
-        return coin;
+        return original;
     }
 
-    public bool Delete(int id)
+    public bool Delete(Guid id)
     {
-        var coin = Get(id);
+        var coin = Read(id);
         if (coin is null)
         {
             return false;
@@ -74,7 +74,7 @@ public class CoinService
     
     private bool NameTaken(string name)
     {
-        return Get(name) is not null;
+        return Read(name) is not null;
     }
     
 

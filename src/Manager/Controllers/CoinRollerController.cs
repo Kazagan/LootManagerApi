@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Manager.Controllers;
 
-[Route("[Controller")]
+[Route("[Controller]")]
 public class CoinRollerController : ControllerBase
 {
     private readonly CoinRollerService _service;
@@ -15,10 +15,38 @@ public class CoinRollerController : ControllerBase
         _service = new CoinRollerService(repository);
     }
 
-    [HttpPut]
-    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    [HttpGet]
+    public IActionResult Get()
     {
-        var roller = _service.Create(coinRoller);
+        var rollers = _service.GetAll();
+        return Ok(rollers);
+    }
+
+    [HttpGet]
+    [Route("{id}")]
+    public IActionResult Get(Guid id)
+    {
+        var roller = _service.Get(id);
+        return Ok(roller);
+    }
+
+    // [HttpPut]
+    // public IActionResult Put([FromBody] CoinRoller coinRoller)
+    // {
+    //     var roller = _service.Create(coinRoller);
+    //
+    //     return roller.Id switch
+    //     {
+    //         -1 => BadRequest("Roller already exists"),
+    //         -2 => BadRequest("Coin Not supplied or already exists"),
+    //         _ => Ok(roller)
+    //     };
+    // }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] Test test)
+    {
+        Console.WriteLine($"The test string is {test.Name}, value: {test.Value}");
         return Ok();
     }
 }
