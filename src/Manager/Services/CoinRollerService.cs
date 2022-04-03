@@ -48,10 +48,10 @@ public class CoinRollerService
     {
         if (coin.Id != Guid.Empty)
         {
-            return _coinService.Read(coin.Id);
+            return _coinService.Get(coin.Id);
         }
 
-        return !string.IsNullOrEmpty(coin.Name) ? _coinService.Read(coin.Name) : null;
+        return !string.IsNullOrEmpty(coin.Name) ? _coinService.Get(coin.Name) : null;
     }
 
     private bool Exists(CoinRoller coinRoller)

@@ -1,15 +1,9 @@
 up:
-	docker-compose up -d
+	docker-compose up -d --build
 	make update-db
 
 down:
 	docker-compose down
-
-#migrate:
-#	dotnet ef migrations add $1 --project src/Data/Data.csproj
-#
-#migrate-rollback:
-#	dotnet ef migrations remove --project src/Data 
 
 reset:
 	make down
@@ -17,3 +11,10 @@ reset:
 
 update-db:
 	dotnet ef database update --project src/Data/Data.csproj
+	
+verify:
+	make reset
+	make test
+    
+dotnet-test:
+	dotnet test

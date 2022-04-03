@@ -6,7 +6,7 @@ public class Coin : Entity
     {
         Name = "";
     }
-    
+
     public decimal InGold { get; set; }
     public string Name { get; set; }
 }

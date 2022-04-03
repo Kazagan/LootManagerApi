@@ -13,15 +13,24 @@ public class CoinService
         _repository = repository;
     }
 
-    public IEnumerable<Coin> ReadAll() => _repository.Get<Coin>();
+    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
 
-    public Coin? Read(Guid id) => _repository.Get<Coin>(id);
+    public Coin? Get(Guid id) => _repository.Get<Coin>(id);
 
-    public Coin? Read(string name)
+    public Coin? Get(string name)
     {
         return _repository
             .Get<Coin>()
             .FirstOrDefault(x => x.Name == name);
+    }
+
+    private Coin? Get(Coin coin)
+    {
+        if (coin.Id != Guid.Empty)
+        {
+            return Get(coin.Id);
+        }
+        return !string.IsNullOrEmpty(coin.Name) ? Get(coin.Name) : null;
     }
 
     public Coin Create(Coin coin)
@@ -30,7 +39,7 @@ public class CoinService
         {
             throw new Exception("Name or in Gold Value not set");
         }
-        if (NameTaken(coin.Name))
+        if (NameIsTaken(coin.Name))
         {
             throw new Exception("Coin Name taken");
         }
@@ -42,7 +51,7 @@ public class CoinService
 
     public Coin Update(Coin coin)
     {
-        var original = Read(coin.Id);
+        var original = Get(coin);
         if (original is null)
         {
             throw new Exception("Coin is Null");
@@ -62,7 +71,7 @@ public class CoinService
 
     public bool Delete(Guid id)
     {
-        var coin = Read(id);
+        var coin = Get(id);
         if (coin is null)
         {
             return false;
@@ -72,9 +81,9 @@ public class CoinService
         return true;
     }
     
-    private bool NameTaken(string name)
+    private bool NameIsTaken(string name)
     {
-        return Read(name) is not null;
+        return Get(name) is not null;
     }
     
 
@@ -82,6 +91,6 @@ public class CoinService
     {
         return original.Name != coin.Name 
                && !string.IsNullOrEmpty(coin.Name) 
-               && NameTaken(coin.Name);
+               && NameIsTaken(coin.Name);
     }
 }

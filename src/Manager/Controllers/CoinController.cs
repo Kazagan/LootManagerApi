@@ -18,21 +18,21 @@ public class CoinController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_service.ReadAll());
+        return Ok(_service.GetAll());
     }
 
     [HttpGet]
     [Route("name/{name}")]
     public IActionResult Get(string name)
     {
-        return Ok(_service.Read(name));
+        return Ok(_service.Get(name));
     }
 
     [HttpGet]
     [Route("{id}")]
     public IActionResult Get(Guid id)
     {
-        return Ok(_service.Read(id));
+        return Ok(_service.Get(id));
     }
 
     [HttpPut]
@@ -45,9 +45,9 @@ public class CoinController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody]Coin input)
     {
-        if (input.Id == Guid.Empty)
+        if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
         {
-            return BadRequest("Must provide id of valid coin");
+            return BadRequest();
         }
         var coin = _service.Update(input);
         return Ok(coin);

@@ -30,7 +30,7 @@ public class CoinServiceTests
         var coins = _fixture.CreateMany<Coin>(100).ToList();
         SetupRepoMock(coins);
 
-        var result = _sut.ReadAll();
+        var result = _sut.GetAll();
         result.Should().BeEquivalentTo(coins);
     }
 
@@ -81,7 +81,7 @@ public class CoinServiceTests
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
-        var result = _sut.Read(coin.Id);
+        var result = _sut.Get(coin.Id);
         result.Should().BeEquivalentTo(coin);
     }
     
@@ -91,7 +91,7 @@ public class CoinServiceTests
         var coins = _fixture.CreateMany<Coin>().ToList();
         SetupRepoMock(coins);
         var coin = coins.First();
-        var result = _sut.Read(coin.Name);
+        var result = _sut.Get(coin.Name);
         result.Should().BeEquivalentTo(coin);
     }
     
@@ -100,7 +100,7 @@ public class CoinServiceTests
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
-        var result = _sut.Read(new Guid());
+        var result = _sut.Get(new Guid());
         result.Should().BeNull();
     }
     
@@ -109,7 +109,7 @@ public class CoinServiceTests
     {
         var coins = _fixture.Create<Coin>();
         SetupRepoMock(coins);
-        var result = _sut.Read("");
+        var result = _sut.Get("");
         result.Should().BeNull();
     }
 
@@ -117,26 +117,52 @@ public class CoinServiceTests
     public void ShouldUpdateBothWhenBothChanged()
     {
         var coin = _fixture.Create<Coin>();
-
+        
         SetupRepoMock(coin);
-
-        coin.InGold = 10;
-        coin.Name = "new name";
-        var result = _sut.Update(coin);
-        result.InGold.Should().Be(coin.InGold);
-        result.Name.Should().Be(coin.Name);
+        var newCoin = new Coin {Id = coin.Id, InGold = 10, Name = "newName"};
+        var result = _sut.Update(newCoin);
+        result.InGold.Should().Be(newCoin.InGold);
+        result.Name.Should().Be(newCoin.Name);
+    }
+    
+    [Fact]
+    public void ShouldUpdateIfOnlyIdPassed()
+    {
+        var coin = _fixture.Create<Coin>();
+        
+        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
+        SetupRepoMock(coin);
+        var newCoin = new Coin {Id = original.Id, InGold = 10};
+        var result = _sut.Update(newCoin);
+        result.InGold.Should().NotBe(original.InGold);
+        result.InGold.Should().Be(newCoin.InGold);
+        result.Name.Should().Be(original.Name);
+    }
+    
+    [Fact]
+    public void ShouldUpdateIfOnlyNamePassed()
+    {
+        var coin = _fixture.Create<Coin>();
+        
+        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
+        SetupRepoMock(new List<Coin> {coin});
+        var newCoin = new Coin {Name = original.Name, InGold = 10};
+        var result = _sut.Update(newCoin);
+        result.InGold.Should().NotBe(original.InGold);
+        result.InGold.Should().Be(newCoin.InGold);
+        result.Name.Should().Be(original.Name);
     }
 
     [Fact]
-    public void ShouldNotChangeIfNullPassed()
+    public void ShouldNotChangeIfValuesNotPassed()
     {
         var coin = _fixture.Create<Coin>();
-
+        
+        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
         SetupRepoMock(coin);
-        coin.Name = "";
-        coin.InGold = 0;
-        var result = _sut.Update(coin);
-        coin.Should().BeEquivalentTo(result);
+        var newCoin = new Coin {Id = original.Id};
+        var result = _sut.Update(newCoin);
+        original.Should().BeEquivalentTo(result);
     }
 
     [Fact]
@@ -166,6 +192,7 @@ public class CoinServiceTests
             .Setup(x => x.Get<Coin>())
             .Returns(coins.AsQueryable);
     }
+
     private void SetupRepoMock(Coin coin)
     {
         _repository
