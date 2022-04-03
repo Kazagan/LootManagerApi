@@ -11,18 +11,16 @@ public static class CoinMapper
         {
             entity
                 .HasKey(e => e.Id);
-
+            
             entity
                 .Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(250);
+                .VarcharWithMaxLength(250);
             
             entity
                 .Property(e => e.InGold)
                 .IsRequired()
                 .HasPrecision(10, 4);
-            entity
-                .Ignore(e => e.Count);
         });
     }
 }

@@ -10,13 +10,12 @@ public class CoinController : ControllerBase
 {
     private readonly CoinService _service;
 
-    public CoinController(IRepository<ManagerContext> repository)
+    public CoinController(IRepository repository)
     {
         _service = new CoinService(repository);
     }
 
     [HttpGet]
-    [Route("All")]
     public IActionResult Get()
     {
         return Ok(_service.GetAll());
@@ -30,37 +29,41 @@ public class CoinController : ControllerBase
     }
 
     [HttpGet]
-    [Route("id/{id}")]
-    public IActionResult Get(int id)
+    [Route("{id}")]
+    public IActionResult Get(Guid id)
     {
         return Ok(_service.Get(id));
     }
 
     [HttpPut]
-    public IActionResult Put(string name, decimal inGold)
+    public IActionResult Put([FromBody] Coin input)
     {
-        var coin = _service.Create(name, inGold);
-        if (coin is null)
+        if (string.IsNullOrEmpty(input.Name) || input.InGold == 0)
         {
-            return Conflict("Coin Type already exists");
+            return BadRequest("Needed values not found");
         }
-        return Created(coin.Id.ToString(), coin);
+        var result = _service.Create(input);
+        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
+    
     [HttpPost]
-    public IActionResult Post(int id, string? name, decimal inGold)
+    public IActionResult Post([FromBody]Coin input)
     {
-        var coin = _service.Update(id, name, inGold);
-        return coin.Id switch
+        if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
         {
-            -1 => NotFound("Coin not found."),
-            0 => Conflict("Coin with that name already exists."),
-            _ => Accepted(coin)
-        };
+            return BadRequest("Must supply Name, unless changing name, then must supply id");
+        }
+        if (string.IsNullOrEmpty(input.Name) && input.InGold == 0)
+        {
+            return Delete(input.Id);
+        }
+        var result = _service.Update(input);
+        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
 
     [HttpDelete]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(Guid id)
     {
-        return _service.Delete((int) id) ? Ok("Coin Deleted") : NotFound($"Coin not found for {id}.");
+        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found.");
     }
 }
