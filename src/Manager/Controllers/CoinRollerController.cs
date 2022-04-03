@@ -42,11 +42,17 @@ public class CoinRollerController : ControllerBase
         var coinRoller = _service.Get(treasureLevel, roll);
         return Ok(coinRoller);
     }
-    
+
     [HttpPut]
     public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
         var result = _service.Create(coinRoller);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(coinRoller) : BadRequest(result);
+    }
+
+    [HttpPost]
+    public IActionResult Post([FromBody] CoinRoller coinRoller)
+    {
+        return Ok();
     }
 }

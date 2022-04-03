@@ -97,6 +97,13 @@ public class CoinRollerServiceTests
             .Verify(x => x.Insert(It.IsAny<CoinRoller>()), Times.Never);
     }
 
+    [Fact]
+    public void ShouldUpdateWhenValidRollerPassed()
+    {
+        var roller = _fixture.CreateMany<CoinRoller>(10);
+        
+    }
+
     private void SetUpMock(IEnumerable<CoinRoller> rollers)
     {
         _repository.Setup(x => x.Get<CoinRoller>())
@@ -104,7 +111,6 @@ public class CoinRollerServiceTests
     }
     private void SetUpMock(CoinRoller roller)
     {
-        _repository.Setup(x => x.Get<CoinRoller>(roller.Id))
-            .Returns(roller);
+        SetUpMock(new List<CoinRoller> {roller});
     }
 }
