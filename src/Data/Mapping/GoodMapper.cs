@@ -13,12 +13,12 @@ public static class GoodMapper
                 .HasKey(e => e.Id);
 
             entity
-                .HasOne(x => x.Value);
+                .HasOne(x => x.Coin);
 
             entity
                 .Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(250);
+                .VarcharWithMaxLength(250);
 
             entity
                 .HasOne(e => e.GoodType);

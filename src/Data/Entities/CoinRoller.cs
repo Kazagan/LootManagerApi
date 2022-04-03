@@ -1,11 +1,14 @@
 namespace Data.Entities;
 
-public class CoinRoller
+public class CoinRoller : Entity
 {
-    public int Id { get; set; }
+    public CoinRoller()
+    {
+        Coin = new Coin();
+    }
     public int TreasureLevel { get; set; }
     public int RollMin { get; set; }
-    public Coin? Coin { get; set; }
+    public Coin Coin { get; set; }
     public int DiceCount { get; set; }
     public int DiceSides { get; set; }
     public int Multiplier { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,10 +13,9 @@ namespace Data.Migrations
                 name: "Coin",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InGold = table.Column<double>(type: "float(4)", precision: 4, scale: 4, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InGold = table.Column<decimal>(type: "decimal(10,4)", precision: 10, scale: 4, nullable: false),
+                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,9 +26,8 @@ namespace Data.Migrations
                 name: "GoodType",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,11 +38,10 @@ namespace Data.Migrations
                 name: "CoinRoller",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TreasureLevel = table.Column<int>(type: "int", nullable: false),
                     RollMin = table.Column<int>(type: "int", nullable: false),
-                    CoinId = table.Column<int>(type: "int", nullable: true),
+                    CoinId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DiceCount = table.Column<int>(type: "int", nullable: false),
                     DiceSides = table.Column<int>(type: "int", nullable: false),
                     Multiplier = table.Column<int>(type: "int", nullable: false)
@@ -55,18 +53,18 @@ namespace Data.Migrations
                         name: "FK_CoinRoller_Coin_CoinId",
                         column: x => x.CoinId,
                         principalTable: "Coin",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Good",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    ValueId = table.Column<int>(type: "int", nullable: false),
-                    GoodTypeId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false),
+                    ValueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GoodTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,11 +87,10 @@ namespace Data.Migrations
                 name: "GoodTypeRoller",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TreasureLevel = table.Column<int>(type: "int", nullable: false),
                     RollMin = table.Column<int>(type: "int", nullable: false),
-                    GoodTypeId = table.Column<int>(type: "int", nullable: false)
+                    GoodTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,13 +107,12 @@ namespace Data.Migrations
                 name: "GoodRoller",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RollMin = table.Column<int>(type: "int", nullable: false),
                     DiceCount = table.Column<int>(type: "int", nullable: false),
                     DiceSides = table.Column<int>(type: "int", nullable: false),
                     Multiplier = table.Column<int>(type: "int", nullable: false),
-                    GoodId = table.Column<int>(type: "int", nullable: false)
+                    GoodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,6 +129,11 @@ namespace Data.Migrations
                 name: "IX_CoinRoller_CoinId",
                 table: "CoinRoller",
                 column: "CoinId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CoinRoller_TreasureLevel_RollMin",
+                table: "CoinRoller",
+                columns: new[] { "TreasureLevel", "RollMin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Good_GoodTypeId",
