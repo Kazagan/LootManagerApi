@@ -64,6 +64,6 @@ public class CoinController : ControllerBase
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found for.");
+        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found.");
     }
 }
