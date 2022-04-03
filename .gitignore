@@ -3,3 +3,5 @@ obj
 .editorconfig
 .idea
 infra
+*.user
+*.DotSettings
