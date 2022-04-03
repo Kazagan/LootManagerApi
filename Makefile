@@ -14,7 +14,8 @@ update-db:
 	
 verify:
 	make reset
-	make test
+	make dotnet-test
     
 dotnet-test:
 	dotnet test
+
