@@ -33,40 +33,33 @@ public class CoinService
         return !string.IsNullOrEmpty(coin.Name) ? Get(coin.Name) : null;
     }
 
-    public Coin Create(Coin coin)
+    public string Create(Coin coin)
     {
-        if (string.IsNullOrEmpty(coin.Name) || coin.InGold == 0)
-        {
-            throw new Exception("Name or in Gold Value not set");
-        }
         if (NameIsTaken(coin.Name))
         {
-            throw new Exception("Coin Name taken");
+            return "Coin Name taken";
         }
-        var newCoin = new Coin {Name = coin.Name, InGold = coin.InGold};
-        _repository.Insert(newCoin);
+        _repository.Insert(coin);
         _repository.Save();
-        return newCoin;
+        return Constants.Success;
     }
 
-    public Coin Update(Coin coin)
+    public string Update(Coin coin)
     {
         var original = Get(coin);
         if (original is null)
         {
-            throw new Exception("Coin is Null");
+            return "Coin not found";
         }
         
         if (IsNewNameAndValid(coin, original) )
         {
-            throw new Exception("Coin name already exists, or is empty");
+            return "Coin name already exists, or is empty";
         }
-
-        original.Name = string.IsNullOrEmpty(coin.Name) ? original.Name : coin.Name;
-        original.InGold = coin.InGold == 0 ? original.InGold : coin.InGold;
-        _repository.Update(original);
+        
+        _repository.Update(coin);
         _repository.Save();
-        return original;
+        return Constants.Success;
     }
 
     public bool Delete(Guid id)

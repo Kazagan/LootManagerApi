@@ -5,6 +5,7 @@ using AutoFixture;
 using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
+using Manager;
 using Manager.Services;
 using Moq;
 using Xunit;
@@ -33,49 +34,7 @@ public class CoinServiceTests
         var result = _sut.GetAll();
         result.Should().BeEquivalentTo(coins);
     }
-
-    [Fact]
-    public void ShouldCallSave()
-    {
-        _sut.Create(_fixture.Create<Coin>());
-        _repository.Verify(x => x.Save(), Times.Once);
-    }
-
-    [Fact]
-    public void ShouldSaveWithExpectedNameAndValue()
-    {
-        var expected = new Coin {Name = "test", InGold = (decimal).01};
-        Coin? actual = null;
-        _repository
-            .Setup(x => x.Insert(It.IsAny<Coin>()))
-            .Callback<Coin>(x => actual = x);
-        _sut.Create(expected);
-        actual?.Name.Should().BeEquivalentTo(expected.Name);
-        actual?.InGold.Should().Be(expected.InGold);
-    }
-
-    [Fact]
-    public void ShouldCallUpdateWithExpectedNewName()
-    {
-        var sample = _fixture.Create<Coin>();
-        SetupRepoMock(sample);
-
-        sample.Name = "newName";
-        var result = _sut.Update(sample);
-        result.Name.Should().Be(sample.Name);
-    }
     
-    [Fact]
-    public void ShouldCallUpdateWithExpectedNewInGold()
-    {
-        var coin = _fixture.Create<Coin>();
-        SetupRepoMock(coin);
-
-        coin.InGold = 10;
-        var result = _sut.Update(coin);
-        result.InGold.Should().Be(coin.InGold);
-    }
-
     [Fact]
     public void ShouldReturnCoinIfIdExists()
     {
@@ -83,6 +42,24 @@ public class CoinServiceTests
         SetupRepoMock(coin);
         var result = _sut.Get(coin.Id);
         result.Should().BeEquivalentTo(coin);
+    }
+    
+    [Fact]
+    public void ShouldReturnNullIfIdDoesntExists()
+    {
+        var coin = _fixture.Create<Coin>();
+        SetupRepoMock(coin);
+        var result = _sut.Get(new Guid());
+        result.Should().BeNull();
+    }
+    
+    [Fact]
+    public void ShouldReturnNullIfNameDoesntExists()
+    {
+        var coins = _fixture.Create<Coin>();
+        SetupRepoMock(coins);
+        var result = _sut.Get("");
+        result.Should().BeNull();
     }
     
     [Fact]
@@ -94,75 +71,80 @@ public class CoinServiceTests
         var result = _sut.Get(coin.Name);
         result.Should().BeEquivalentTo(coin);
     }
-    
+
     [Fact]
-    public void ShouldReturnCoinIfIdDoesntExists()
+    public void ShouldCallSave()
     {
-        var coin = _fixture.Create<Coin>();
-        SetupRepoMock(coin);
-        var result = _sut.Get(new Guid());
-        result.Should().BeNull();
-    }
-    
-    [Fact]
-    public void ShouldReturnCoinIfNameDoesntExists()
-    {
-        var coins = _fixture.Create<Coin>();
-        SetupRepoMock(coins);
-        var result = _sut.Get("");
-        result.Should().BeNull();
+        _sut.Create(_fixture.Create<Coin>());
+        _repository.Verify(x => x.Save(), Times.Once);
     }
 
     [Fact]
-    public void ShouldUpdateBothWhenBothChanged()
+    public void ShouldSaveWithExpectedNameAndValue()
     {
-        var coin = _fixture.Create<Coin>();
-        
-        SetupRepoMock(coin);
-        var newCoin = new Coin {Id = coin.Id, InGold = 10, Name = "newName"};
-        var result = _sut.Update(newCoin);
-        result.InGold.Should().Be(newCoin.InGold);
-        result.Name.Should().Be(newCoin.Name);
+        var expected = _fixture.Create<Coin>();
+
+        Coin? actual = null;
+        _repository
+            .Setup(x => x.Insert(It.IsAny<Coin>()))
+            .Callback<Coin>(x => actual = x);
+        _sut.Create(expected);
+
+        actual?.Name.Should().Be(expected.Name);
+        actual?.InGold.Should().Be(expected.InGold);
+    }
+
+    [Fact]
+    public void ShouldNotSaveWhenNameTaken()
+    {
+        var expected = _fixture.CreateMany<Coin>(1).ToList();
+        SetupRepoMock(expected);
+
+        Coin? actual = null;
+        _repository
+            .Setup(x => x.Insert(It.IsAny<Coin>()))
+            .Callback<Coin>(x => actual = x);
+        _sut.Create(expected.First());
+
+        actual.Should().BeNull();
     }
     
     [Fact]
-    public void ShouldUpdateIfOnlyIdPassed()
+    public void ShouldCallUpdateWithExpectedNewValues()
     {
         var coin = _fixture.Create<Coin>();
-        
-        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
         SetupRepoMock(coin);
-        var newCoin = new Coin {Id = original.Id, InGold = 10};
+        Coin? callBack = null;
+        _repository
+            .Setup(x => x.Update(It.IsAny<Coin>()))
+            .Callback<Coin>(x => callBack = x);
+
+        var newCoin = _fixture.Create<Coin>();
+        newCoin.Id = coin.Id;
+        _sut.Update(newCoin);
+        callBack.Should().BeEquivalentTo(newCoin);
+    }
+    
+    [Fact]
+    public void ShouldUpdateIfIdAndInGoldPassed()
+    {
+        var coin = _fixture.Create<Coin>();
+        SetupRepoMock(coin);
+
+        var newCoin = new Coin { Id = coin.Id, InGold = 10 };
         var result = _sut.Update(newCoin);
-        result.InGold.Should().NotBe(original.InGold);
-        result.InGold.Should().Be(newCoin.InGold);
-        result.Name.Should().Be(original.Name);
+        result.Should().Be(Constants.Success);
     }
     
     [Fact]
     public void ShouldUpdateIfOnlyNamePassed()
     {
         var coin = _fixture.Create<Coin>();
-        
-        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
-        SetupRepoMock(new List<Coin> {coin});
-        var newCoin = new Coin {Name = original.Name, InGold = 10};
-        var result = _sut.Update(newCoin);
-        result.InGold.Should().NotBe(original.InGold);
-        result.InGold.Should().Be(newCoin.InGold);
-        result.Name.Should().Be(original.Name);
-    }
+        SetupRepoMock(new List<Coin> { coin });
 
-    [Fact]
-    public void ShouldNotChangeIfValuesNotPassed()
-    {
-        var coin = _fixture.Create<Coin>();
-        
-        var original = new Coin { Id = coin.Id, InGold = coin.InGold, Name = coin.Name};
-        SetupRepoMock(coin);
-        var newCoin = new Coin {Id = original.Id};
+        var newCoin = new Coin { Name = coin.Name, InGold = 10 };
         var result = _sut.Update(newCoin);
-        original.Should().BeEquivalentTo(result);
+        result.Should().Be(Constants.Success);
     }
 
     [Fact]

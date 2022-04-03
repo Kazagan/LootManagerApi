@@ -38,8 +38,12 @@ public class CoinController : ControllerBase
     [HttpPut]
     public IActionResult Put([FromBody] Coin input)
     {
-        var coin = _service.Create(input);
-        return Ok(coin);
+        if (string.IsNullOrEmpty(input.Name) || input.InGold == 0)
+        {
+            return BadRequest("Needed values not found");
+        }
+        var result = _service.Create(input);
+        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
     
     [HttpPost]
@@ -47,15 +51,19 @@ public class CoinController : ControllerBase
     {
         if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
         {
-            return BadRequest();
+            return BadRequest("Must supply Name, unless changing name, then must supply id");
         }
-        var coin = _service.Update(input);
-        return Ok(coin);
+        if (string.IsNullOrEmpty(input.Name) && input.InGold == 0)
+        {
+            return Delete(Guid.Empty);
+        }
+        var result = _service.Update(input);
+        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found for {id}.");
+        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found for.");
     }
 }
