@@ -76,10 +76,24 @@ public class CoinRollerServiceTests
     }
 
     [Fact]
-    public void ShouldCreateNewCoinRoller()
+    public void IfRollerExistsShouldNotInsert()
     {
-        var roller = _fixture.Create<CoinRoller>();
-        true.Should().BeTrue();
+        var coinRoller = _fixture.CreateMany<CoinRoller>().ToList();
+        SetUpMock(coinRoller);
+
+        _sut.Create(coinRoller.First());
+        _repository
+            .Verify(x => x.Insert(It.IsAny<CoinRoller>()), Times.Never);
+    }
+    
+    [Fact]
+    public void IfNoCoinShouldNotInsert()
+    {
+        var coinRoller = _fixture.CreateMany<CoinRoller>().ToList();
+
+        _sut.Create(coinRoller.First());
+        _repository
+            .Verify(x => x.Insert(It.IsAny<CoinRoller>()), Times.Never);
     }
 
     private void SetUpMock(IEnumerable<CoinRoller> rollers)

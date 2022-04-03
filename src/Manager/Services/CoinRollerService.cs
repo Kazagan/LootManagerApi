@@ -24,23 +24,23 @@ public class CoinRollerService
             .LastOrDefault(x => x.RollMin < roll);
     }
 
-    public CoinRoller Create(CoinRoller coinRoller)
+    public string Create(CoinRoller coinRoller)
     {
         if (Exists(coinRoller))
         {
-            throw new Exception("Roller already exists for this treasure level and minimum");
+            return "Roller already exists for this treasure level and minimum";
         }
 
         var coin = GetCoin(coinRoller.Coin);
         if (coin is null)
         {
-            throw new Exception("No Coin found for input.");
+            return "Must provide existing coin.";
         }
 
         coinRoller.Coin = coin;
         _repository.Insert(coinRoller);
         _repository.Save();
-        return coinRoller;
+        return Constants.Success;
     }
 
     private Coin? GetCoin(Coin coin)

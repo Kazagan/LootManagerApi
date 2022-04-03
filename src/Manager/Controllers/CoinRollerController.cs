@@ -30,16 +30,23 @@ public class CoinRollerController : ControllerBase
         return Ok(roller);
     }
 
-    // [HttpPut]
-    // public IActionResult Put([FromBody] CoinRoller coinRoller)
-    // {
-    //     var roller = _service.Create(coinRoller);
-    //
-    //     return roller.Id switch
-    //     {
-    //         -1 => BadRequest("Roller already exists"),
-    //         -2 => BadRequest("Coin Not supplied or already exists"),
-    //         _ => Ok(roller)
-    //     };
-    // }
+    [HttpGet]
+    [Route("level")]
+    public IActionResult Get(int treasureLevel, int roll)
+    {
+        if (roll == 0)
+        {
+            var coinRollers = _service.GetAll().Where(x => x.TreasureLevel == treasureLevel);
+            return Ok(coinRollers);
+        }
+        var coinRoller = _service.Get(treasureLevel, roll);
+        return Ok(coinRoller);
+    }
+    
+    [HttpPut]
+    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    {
+        var result = _service.Create(coinRoller);
+        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(coinRoller) : BadRequest(result);
+    }
 }
