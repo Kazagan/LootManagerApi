@@ -31,7 +31,7 @@ public class Startup
     public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseAuthentication();
-        if (env.IsDevelopment())
+        if (env.IsDevelopment() || env.EnvironmentName.Equals("Docker", StringComparison.OrdinalIgnoreCase))
         {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();

@@ -24,13 +24,14 @@ public class CoinService
             .FirstOrDefault(x => x.Name == name);
     }
 
-    private Coin? Get(Coin coin)
+    public Coin? Get(Coin coin)
     {
         if (coin.Id != Guid.Empty)
         {
             return Get(coin.Id);
         }
-        return !string.IsNullOrEmpty(coin.Name) ? Get(coin.Name) : null;
+
+        return string.IsNullOrEmpty(coin.Name) ? null : Get(coin.Name);
     }
 
     public string Create(Coin coin)
