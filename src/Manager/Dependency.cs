@@ -7,7 +7,7 @@ public static class Dependency
 {
     public static void BindRepositories(this IServiceCollection service)
     {
-        service.AddScoped<IRepository<ManagerContext>, Repository<ManagerContext>>();
+        service.AddScoped<IRepository, Repository<ManagerContext>>();
     }
     public static void BindServices(this IServiceCollection services)
     {

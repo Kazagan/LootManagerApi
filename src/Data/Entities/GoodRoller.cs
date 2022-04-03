@@ -1,8 +1,11 @@
 namespace Data.Entities;
 
-public class GoodRoller
+public class GoodRoller : Entity
 {
-    public int Id { get; set; }
+    GoodRoller()
+    {
+        Good = new Good();
+    }
     public int RollMin { get; set; }
     public int DiceCount { get; set; }
     public int DiceSides { get; set; }

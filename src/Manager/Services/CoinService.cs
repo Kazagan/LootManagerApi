@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Data.Entities;
 using Data.Repositories;
@@ -7,24 +6,16 @@ namespace Manager.Services;
 
 public class CoinService
 {
-    private IRepository<ManagerContext> _repository;
+    private readonly IRepository _repository;
 
-    public CoinService(IRepository<ManagerContext> repository)
+    public CoinService(IRepository repository)
     {
         _repository = repository;
     }
 
-    public IEnumerable<Coin> GetAll()
-    {
-        return _repository.Get<Coin>();
-    }
+    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
 
-    public Coin? Get(int id)
-    {
-        return _repository
-            .Get<Coin>()
-            .FirstOrDefault(x => x.Id == id);
-    }
+    public Coin? Get(Guid id) => _repository.Get<Coin>(id);
 
     public Coin? Get(string name)
     {
@@ -33,37 +24,46 @@ public class CoinService
             .FirstOrDefault(x => x.Name == name);
     }
 
-    public Coin? Create(string name, decimal inGold)
+    public Coin? Get(Coin coin)
     {
-        if (NameTaken(name))
+        if (coin.Id != Guid.Empty)
         {
-            return null;
+            return Get(coin.Id);
         }
-        var newCoin = new Coin {Name = name, InGold = inGold};
-        _repository.Insert(newCoin);
-        _repository.Save();
-        return newCoin;
+
+        return string.IsNullOrEmpty(coin.Name) ? null : Get(coin.Name);
     }
 
-    public Coin Update(int id, string? name, decimal? inGold)
+    public string Create(Coin coin)
     {
-        var coin = Get(id);
-        if (coin is null)
+        if (NameIsTaken(coin.Name))
         {
-            return new Coin {Id = -1};
+            return "Coin Name taken";
         }
-        if (!coin.Name.Equals(name, StringComparison.Ordinal) && !string.IsNullOrEmpty(name) && NameTaken(name ?? ""))
+        _repository.Insert(coin);
+        _repository.Save();
+        return Constants.Success;
+    }
+
+    public string Update(Coin coin)
+    {
+        var original = Get(coin);
+        if (original is null)
         {
-            return new Coin {Id = 0};
+            return "Coin not found";
         }
-        coin.Name = name ?? coin.Name;
-        coin.InGold = inGold ?? coin.InGold;
+        
+        if (IsNewNameAndValid(coin, original) )
+        {
+            return "Coin name already exists, or is empty";
+        }
+        
         _repository.Update(coin);
         _repository.Save();
-        return coin;
+        return Constants.Success;
     }
 
-    public bool Delete(int id)
+    public bool Delete(Guid id)
     {
         var coin = Get(id);
         if (coin is null)
@@ -75,8 +75,16 @@ public class CoinService
         return true;
     }
     
-    private bool NameTaken(string name)
+    private bool NameIsTaken(string name)
     {
         return Get(name) is not null;
+    }
+    
+
+    private bool IsNewNameAndValid(Coin coin, Coin original)
+    {
+        return original.Name != coin.Name 
+               && !string.IsNullOrEmpty(coin.Name) 
+               && NameIsTaken(coin.Name);
     }
 }

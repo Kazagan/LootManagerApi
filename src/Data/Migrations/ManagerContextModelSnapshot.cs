@@ -24,11 +24,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.Coin", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("InGold")
                         .HasPrecision(10, 4)
@@ -37,7 +35,7 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("Varchar(250)");
 
                     b.HasKey("Id");
 
@@ -46,14 +44,12 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.CoinRoller", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CoinId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CoinId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("DiceCount")
                         .HasColumnType("int");
@@ -74,27 +70,27 @@ namespace Data.Migrations
 
                     b.HasIndex("CoinId");
 
+                    b.HasIndex("TreasureLevel", "RollMin");
+
                     b.ToTable("CoinRoller");
                 });
 
             modelBuilder.Entity("Data.Entities.Good", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("GoodTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GoodTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("Varchar(250)");
 
-                    b.Property<int>("ValueId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ValueId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -107,11 +103,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.GoodRoller", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("DiceCount")
                         .HasColumnType("int");
@@ -119,8 +113,8 @@ namespace Data.Migrations
                     b.Property<int>("DiceSides")
                         .HasColumnType("int");
 
-                    b.Property<int>("GoodId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GoodId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Multiplier")
                         .HasColumnType("int");
@@ -137,16 +131,14 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.GoodType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("Varchar(250)");
 
                     b.HasKey("Id");
 
@@ -155,14 +147,12 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.GoodTypeRoller", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("GoodTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GoodTypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("RollMin")
                         .HasColumnType("int");
@@ -181,7 +171,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Entities.Coin", "Coin")
                         .WithMany()
-                        .HasForeignKey("CoinId");
+                        .HasForeignKey("CoinId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Coin");
                 });
