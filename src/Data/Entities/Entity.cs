@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Internal;
+
 namespace Data.Entities;
 
 public abstract class Entity

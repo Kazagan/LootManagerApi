@@ -55,7 +55,7 @@ public class CoinController : ControllerBase
         }
         if (string.IsNullOrEmpty(input.Name) && input.InGold == 0)
         {
-            return Delete(input.Id);
+            return BadRequest("No values to change passed, did you want to delete?");
         }
         var result = _service.Update(input);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);

@@ -42,6 +42,12 @@ public class CoinRollerController : ControllerBase
         var coinRoller = _service.Get(treasureLevel, roll);
         return Ok(coinRoller);
     }
+
+    [Route("Test")]
+    public IActionResult Test([FromBody] CoinRoller coinRoller)
+    {
+        return Ok(Constants.IsDefault(coinRoller));
+    }
     
     [HttpPut]
     public IActionResult Put([FromBody] CoinRoller coinRoller)
