@@ -53,7 +53,18 @@ public class CoinRollerService
 
     public string Update(CoinRoller coinRoller)
     {
-        return "";
+        var original = Get(coinRoller.Id);
+        if (original is null)
+        {
+            return Constants.NotFound;
+        }
+        if (Exists(coinRoller))
+        {
+            return "coin roller already exists for given treasure level and roll";
+        }
+        
+
+        return Constants.Success;
     }
 
     private bool Exists(CoinRoller coinRoller)

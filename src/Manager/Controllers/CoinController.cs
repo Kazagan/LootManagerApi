@@ -54,10 +54,15 @@ public class CoinController : ControllerBase
         }
         if (string.IsNullOrEmpty(input.Name) && input.InGold == 0)
         {
-            return Delete(input.Id);
+            return BadRequest("Name or Id must be supplied");
         }
         var result = _service.Update(input);
-        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
+        return result switch
+        {
+            Constants.Success => Ok(input),
+            Constants.NotFound => NotFound(),
+            _ => BadRequest(result)
+        };
     }
 
     [HttpDelete]

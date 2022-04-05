@@ -119,6 +119,7 @@ public class CoinRollerServiceTests
             .Setup(x => x.Insert(It.IsAny<CoinRoller>()))
             .Callback<CoinRoller>(x => callback = x);
 
+        _sut.Update(sample);
         callback.Should().BeEquivalentTo(sample);
     }
 

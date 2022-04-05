@@ -49,7 +49,7 @@ public class CoinService
         var original = Get(coin);
         if (original is null)
         {
-            return "Coin not found";
+            return Constants.NotFound;
         }
         
         if (IsNewNameAndValid(coin, original) )
