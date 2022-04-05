@@ -13,14 +13,13 @@ public class CoinService
         _repository = repository;
     }
 
-    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
+    public IEnumerable<Coin> Get() => _repository.Get<Coin>();
 
     public Coin? Get(Guid id) => _repository.Get<Coin>(id);
 
     public Coin? Get(string name)
     {
-        return _repository
-            .Get<Coin>()
+        return _repository.Get<Coin>()
             .FirstOrDefault(x => x.Name == name);
     }
 

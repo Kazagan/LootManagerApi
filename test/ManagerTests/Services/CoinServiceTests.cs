@@ -31,7 +31,7 @@ public class CoinServiceTests
         var coins = _fixture.CreateMany<Coin>(100).ToList();
         SetupRepoMock(coins);
 
-        var result = _sut.GetAll();
+        var result = _sut.Get();
         result.Should().BeEquivalentTo(coins);
     }
     

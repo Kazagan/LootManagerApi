@@ -16,23 +16,22 @@ public class CoinController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult Get(string? name)
     {
-        return Ok(_service.GetAll());
-    }
-
-    [HttpGet]
-    [Route("name/{name}")]
-    public IActionResult Get(string name)
-    {
-        return Ok(_service.Get(name));
+        if(name is null)
+        {
+            return Ok(_service.Get());
+        }
+        var result = _service.Get(name);
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpGet]
     [Route("{id}")]
     public IActionResult Get(Guid id)
     {
-        return Ok(_service.Get(id));
+        var result = _service.Get(id);
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpPut]
