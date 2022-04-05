@@ -63,7 +63,6 @@ public class CoinRollerService
             return "coin roller already exists for given treasure level and roll";
         }
         
-
         return Constants.Success;
     }
 

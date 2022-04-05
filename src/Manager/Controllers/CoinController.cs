@@ -34,7 +34,7 @@ public class CoinController : ControllerBase
         return result is null ? NotFound() : Ok(result);
     }
 
-    [HttpPut]
+    [HttpPost]
     public IActionResult Put([FromBody] Coin input)
     {
         if (string.IsNullOrEmpty(input.Name) || input.InGold == 0)
@@ -45,7 +45,7 @@ public class CoinController : ControllerBase
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
     
-    [HttpPost]
+    [HttpPut]
     public IActionResult Post([FromBody]Coin input)
     {
         if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
