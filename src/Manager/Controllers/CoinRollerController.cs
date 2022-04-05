@@ -43,14 +43,14 @@ public class CoinRollerController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    public IActionResult Post([FromBody] CoinRoller coinRoller)
     {
         var result = _service.Create(coinRoller);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(coinRoller) : BadRequest(result);
     }
 
     [HttpPut]
-    public IActionResult Post([FromBody] CoinRoller coinRoller)
+    public IActionResult Pu([FromBody] CoinRoller coinRoller)
     {
         return Ok(Common.ValidInsert(coinRoller));
     }

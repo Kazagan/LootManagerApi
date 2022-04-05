@@ -35,7 +35,7 @@ public class CoinController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Put([FromBody] Coin input)
+    public IActionResult Post([FromBody] Coin input)
     {
         if (string.IsNullOrEmpty(input.Name) || input.InGold == 0)
         {
@@ -46,7 +46,7 @@ public class CoinController : ControllerBase
     }
     
     [HttpPut]
-    public IActionResult Post([FromBody]Coin input)
+    public IActionResult Put([FromBody]Coin input)
     {
         if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
         {
