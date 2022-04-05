@@ -50,7 +50,7 @@ public class CoinRollerController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Pu([FromBody] CoinRoller coinRoller)
+    public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
         return Ok(Common.ValidInsert(coinRoller));
     }
