@@ -1,3 +1,4 @@
+using Data;
 using Data.Entities;
 using Data.Repositories;
 using Manager.Services;
@@ -27,20 +28,18 @@ public class CoinRollerController : ControllerBase
     public IActionResult Get(Guid id)
     {
         var roller = _service.Get(id);
-        return Ok(roller);
+        return roller is null ? NotFound(roller): Ok(roller);
     }
 
     [HttpGet]
-    [Route("level")]
     public IActionResult Get(int treasureLevel, int roll)
     {
         if (roll == 0)
         {
-            var coinRollers = _service.GetAll().Where(x => x.TreasureLevel == treasureLevel);
-            return Ok(coinRollers);
+            return Ok(_service.GetForLevel(treasureLevel));
         }
         var coinRoller = _service.Get(treasureLevel, roll);
-        return Ok(coinRoller);
+        return coinRoller is null ? NotFound(coinRoller): Ok(coinRoller);
     }
 
     [HttpPut]
@@ -53,6 +52,6 @@ public class CoinRollerController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] CoinRoller coinRoller)
     {
-        return Ok();
+        return Ok(Common.ValidInsert(coinRoller));
     }
 }

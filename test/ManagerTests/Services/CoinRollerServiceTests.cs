@@ -98,15 +98,34 @@ public class CoinRollerServiceTests
     }
 
     [Fact]
+    public void ShouldNotInsertIfAllValuesNotProvided()
+    {
+        var roller = _fixture.Create<CoinRoller>();
+        roller.Multiplier = 0;
+        _sut.Create(roller);
+        _repository.Verify(x => x.Insert(It.IsAny<CoinRoller>()), Times.Never);
+    }
+
+    [Fact]
     public void ShouldUpdateWhenValidRollerPassed()
     {
-        var roller = _fixture.CreateMany<CoinRoller>(10);
-        
+        var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
+        SetUpMock(rollers);
+        var sample = rollers.First();
+        sample.Multiplier = 10;
+
+        CoinRoller? callback = null;
+        _repository
+            .Setup(x => x.Insert(It.IsAny<CoinRoller>()))
+            .Callback<CoinRoller>(x => callback = x);
+
+        callback.Should().BeEquivalentTo(sample);
     }
 
     private void SetUpMock(IEnumerable<CoinRoller> rollers)
     {
-        _repository.Setup(x => x.Get<CoinRoller>())
+        _repository
+            .Setup(x => x.Get<CoinRoller>())
             .Returns(rollers.AsQueryable());
     }
     private void SetUpMock(CoinRoller roller)

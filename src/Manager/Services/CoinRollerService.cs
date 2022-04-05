@@ -1,3 +1,4 @@
+using Data;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,12 @@ public class CoinRollerService
         .Include(x => x.Coin);
     public CoinRoller? Get(Guid id) => GetAll().FirstOrDefault(x => x.Id == id);
 
+    public IEnumerable<CoinRoller> GetForLevel(int treasureLevel) =>
+        GetAll().Where(x => x.TreasureLevel == treasureLevel);
+
     public CoinRoller? Get(int treasureLevel, int roll)
     {
-        return GetAll()
-            .Where(x => x.TreasureLevel == treasureLevel)
+        return GetForLevel(treasureLevel)
             .OrderBy(x => x.RollMin)
             .LastOrDefault(x => x.RollMin < roll);
     }
@@ -32,7 +35,10 @@ public class CoinRollerService
         {
             return "Roller already exists for this treasure level and minimum";
         }
-
+        if (!Common.ValidInsert(coinRoller))
+        {
+            return "Invalid insert, please provide all values";
+        }
         var coin = _coinService.Get(coinRoller.Coin);
         if (coin is null)
         {
@@ -43,6 +49,11 @@ public class CoinRollerService
         _repository.Insert(coinRoller);
         _repository.Save();
         return Constants.Success;
+    }
+
+    public string Update(CoinRoller coinRoller)
+    {
+        return "";
     }
 
     private bool Exists(CoinRoller coinRoller)
