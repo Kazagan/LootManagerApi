@@ -10,6 +10,6 @@ __TODO:__
     -   Acceptance tests  
     +   Goods
 
-Current issues:
-    - Laptop only: When running in docker, containers are unable to communicate. Issue does not exist on desktop. Unsure of cause,
+Current issues:  
+    - My Laptop only: When running in docker, containers are unable to communicate. Issue does not exist on on my desktop. Unsure of cause,
     Settings seem to be configured correctly.
