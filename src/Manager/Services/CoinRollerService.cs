@@ -54,14 +54,24 @@ public class CoinRollerService
         if (Changed(original, roller) && Exists(roller))
             return Constants.Exists;
         
-        var coin = _coinService.Get(roller.Coin);
-        if (coin is not null && coin != original.Coin)
+        if (CoinChanged(original, roller))
+        {
+            var coin = _coinService.Get(roller.Coin);
+            if (coin is null)
+                return "New coin not found";
             original.Coin = coin;
+        }
         
         original.Copy(roller);
         _repository.Update(original);
         _repository.Save();
         return Constants.Success;
+    }
+
+    private bool CoinChanged(CoinRoller original, CoinRoller roller)
+    {
+        return (roller.Coin.Id != Guid.Empty && original.Coin.Id != roller.Coin.Id) ||
+               (!string.IsNullOrEmpty(roller.Coin.Name) && original.Coin.Name != roller.Coin.Name);
     }
 
     private bool Changed(CoinRoller original, CoinRoller roller)

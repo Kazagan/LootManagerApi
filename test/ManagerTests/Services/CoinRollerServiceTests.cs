@@ -110,13 +110,13 @@ public class CoinRollerServiceTests
     
     //Update
     [Fact]
-    public void ShouldUpdateWhenValidRollerPassed()
+    public void ShouldNotUpdateWhenValidRollerPassed()
     {
         var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
         SetUpMock(rollers);
-        var sample = CreateCopy(rollers.First());
-
-        sample.Multiplier = 10;
+        var sample = _fixture.Create<CoinRoller>(); 
+        sample.Id = rollers.First().Id;
+        SetUpMock(sample.Coin);
         
         CoinRoller? callback = null;
         _repository
@@ -125,6 +125,25 @@ public class CoinRollerServiceTests
         
         _sut.Update(sample);
         callback.Should().BeEquivalentTo(sample);
+    }
+    
+    [Fact]
+    public void ShouldNotUpdateWhenNewCoinNotFoundPassed()
+    {
+        var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
+        SetUpMock(rollers);
+        var sample = _fixture.Create<CoinRoller>();
+
+        sample.Id = rollers.First().Id;
+        
+        CoinRoller? callback = null;
+        _repository
+            .Setup(x => x.Update(It.IsAny<CoinRoller>()))
+            .Callback<CoinRoller>(x => callback = x);
+        
+        var result = _sut.Update(sample);
+        callback.Should().BeNull();
+        result.Should().Contain("not found");
     }
     
     [Fact]
