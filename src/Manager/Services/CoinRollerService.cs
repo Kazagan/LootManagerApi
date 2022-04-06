@@ -32,18 +32,12 @@ public class CoinRollerService
     public string Create(CoinRoller coinRoller)
     {
         if (Exists(coinRoller))
-        {
-            return "Roller already exists for this treasure level and minimum";
-        }
-        if (!Common.ValidInsert(coinRoller))
-        {
-            return "Invalid insert, please provide all values";
-        }
+            return Constants.Exists;
         var coin = _coinService.Get(coinRoller.Coin);
         if (coin is null)
-        {
             return "Must provide existing coin.";
-        }
+        if (coinRoller.IsInvalid())
+            return Constants.Invalid;
 
         coinRoller.Coin = coin;
         _repository.Insert(coinRoller);
@@ -55,14 +49,18 @@ public class CoinRollerService
     {
         var original = Get(coinRoller.Id);
         if (original is null)
-        {
             return Constants.NotFound;
-        }
-        if (Exists(coinRoller))
-        {
-            return "coin roller already exists for given treasure level and roll";
-        }
         
+        if (Exists(coinRoller))
+            return Constants.Exists;
+        
+        var coin = _coinService.Get(coinRoller.Coin);
+        if (coin is not null && coin != original.Coin)
+            original.Coin = coin;
+        
+        original.Copy(coinRoller);
+        _repository.Update(original);
+        _repository.Save();
         return Constants.Success;
     }
 

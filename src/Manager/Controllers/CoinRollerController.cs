@@ -35,9 +35,8 @@ public class CoinRollerController : ControllerBase
     public IActionResult Get(int treasureLevel, int roll)
     {
         if (roll == 0)
-        {
             return Ok(_service.GetForLevel(treasureLevel));
-        }
+        
         var coinRoller = _service.Get(treasureLevel, roll);
         return coinRoller is null ? NotFound(coinRoller): Ok(coinRoller);
     }
@@ -52,6 +51,6 @@ public class CoinRollerController : ControllerBase
     [HttpPut]
     public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
-        return Ok(Common.ValidInsert(coinRoller));
+        return Ok(coinRoller);
     }
 }
