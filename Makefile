@@ -1,6 +1,6 @@
 up:
 	docker-compose up -d --build
-	make update-db
+	#make update-db
 
 down:
 	docker-compose down

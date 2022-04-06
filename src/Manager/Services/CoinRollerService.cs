@@ -68,6 +68,16 @@ public class CoinRollerService
         return Constants.Success;
     }
 
+    public bool Delete(Guid Id)
+    {
+        var roller = Get(Id);
+        if (roller is null)
+            return false;
+        _repository.Delete(roller);
+        _repository.Save();
+        return true;
+    }
+
     private bool CoinChanged(CoinRoller original, CoinRoller roller)
     {
         return (roller.Coin.Id != Guid.Empty && original.Coin.Id != roller.Coin.Id) ||

@@ -201,6 +201,27 @@ public class CoinRollerServiceTests
         callback.Should().BeNull();
         result.Should().Be(Constants.Exists);
     }
+    
+    //DELETE
+    [Fact]
+    public void ShouldCallDeleteForExpecteCoinWhenIdFound()
+    {
+        var roller = _fixture.Create<CoinRoller>();
+        SetUpMock(roller);
+
+        _sut.Delete(roller.Id);
+        _repository.Verify(x => x.Delete(It.IsAny<CoinRoller>()), Times.Once);
+    }
+    
+    //DELETE
+    [Fact]
+    public void ShouldNotCallDeleteForExpecteCoinWhenNotFound()
+    {
+        var roller = _fixture.Create<CoinRoller>();
+
+        _sut.Delete(roller.Id);
+        _repository.Verify(x => x.Delete(It.IsAny<CoinRoller>()), Times.Never);
+    }
 
     private CoinRoller CreateCopy(CoinRoller roller)
     {

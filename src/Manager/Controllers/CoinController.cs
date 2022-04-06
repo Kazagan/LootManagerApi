@@ -19,9 +19,7 @@ public class CoinController : ControllerBase
     public IActionResult Get(string? name)
     {
         if(name is null)
-        {
             return Ok(_service.Get());
-        }
         var result = _service.Get(name);
         return result is null ? NotFound() : Ok(result);
     }
@@ -45,9 +43,7 @@ public class CoinController : ControllerBase
     public IActionResult Update([FromBody]Coin input)
     {
         if (input.Id == Guid.Empty)
-        {
             return BadRequest("Must supply Id");
-        }
         var result = _service.Update(input);
         return result switch
         {
@@ -60,6 +56,6 @@ public class CoinController : ControllerBase
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound();
+        return _service.Delete(id) ? Ok("Deleted") : NotFound();
     }
 }

@@ -51,6 +51,20 @@ public class CoinRollerController : ControllerBase
     [HttpPut]
     public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
-        return Ok(coinRoller);
+        if (coinRoller.Id == Guid.Empty)
+            return BadRequest("Must supply Id");
+        var result = _service.Update(coinRoller);
+        return result switch
+        {
+            Constants.Success => Ok(coinRoller),
+            Constants.NotFound => NotFound(),
+            _ => BadRequest(result)
+        };
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(Guid id)
+    {
+        return _service.Delete(id) ? Ok("Deleted"): NotFound();
     }
 }

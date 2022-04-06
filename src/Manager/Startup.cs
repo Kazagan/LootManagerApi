@@ -1,4 +1,5 @@
 using Data.Repositories;
+using Manager.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Manager;
@@ -39,7 +40,8 @@ public class Startup
         }
 
         app.UseRouting();
-        
+        // DatabaseService.MigrationInitialisation(app);
+
 
         app.UseEndpoints(endpoints =>
         {
