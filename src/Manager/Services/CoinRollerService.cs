@@ -94,6 +94,8 @@ public class CoinRollerService
     {
         return GetRoll(roller.TreasureLevel, roller.RollMin) is not null;
     }
+    
+    
 
     // Get for specific treasure level and roll, rather than the next, used for ensuring roll is not already set.
     private CoinRoller? GetRoll(int treasureLevel, int rollMin) => 
