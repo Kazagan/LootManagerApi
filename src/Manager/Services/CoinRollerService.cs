@@ -45,28 +45,34 @@ public class CoinRollerService
         return Constants.Success;
     }
 
-    public string Update(CoinRoller coinRoller)
+    public string Update(CoinRoller roller)
     {
-        var original = Get(coinRoller.Id);
+        var original = Get(roller.Id);
         if (original is null)
             return Constants.NotFound;
         
-        if (Exists(coinRoller))
+        if (Changed(original, roller) && Exists(roller))
             return Constants.Exists;
         
-        var coin = _coinService.Get(coinRoller.Coin);
+        var coin = _coinService.Get(roller.Coin);
         if (coin is not null && coin != original.Coin)
             original.Coin = coin;
         
-        original.Copy(coinRoller);
+        original.Copy(roller);
         _repository.Update(original);
         _repository.Save();
         return Constants.Success;
     }
 
-    private bool Exists(CoinRoller coinRoller)
+    private bool Changed(CoinRoller original, CoinRoller roller)
     {
-        return GetRoll(coinRoller.TreasureLevel, coinRoller.RollMin) is not null;
+        return original.TreasureLevel != roller.TreasureLevel &&
+               original.RollMin != roller.RollMin;
+    }
+
+    private bool Exists(CoinRoller roller)
+    {
+        return GetRoll(roller.TreasureLevel, roller.RollMin) is not null;
     }
 
     // Get for specific treasure level and roll, rather than the next, used for ensuring roll is not already set.

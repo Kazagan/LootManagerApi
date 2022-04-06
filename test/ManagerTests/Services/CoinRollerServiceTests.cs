@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using AutoFixture;
 using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
+using Manager;
 using Manager.Services;
 using Moq;
 using Xunit;
@@ -105,22 +107,94 @@ public class CoinRollerServiceTests
         _sut.Create(roller);
         _repository.Verify(x => x.Insert(It.IsAny<CoinRoller>()), Times.Never);
     }
-
+    
+    //Update
     [Fact]
     public void ShouldUpdateWhenValidRollerPassed()
     {
         var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
         SetUpMock(rollers);
-        var sample = rollers.First();
-        sample.Multiplier = 10;
+        var sample = CreateCopy(rollers.First());
 
+        sample.Multiplier = 10;
+        
         CoinRoller? callback = null;
         _repository
-            .Setup(x => x.Insert(It.IsAny<CoinRoller>()))
+            .Setup(x => x.Update(It.IsAny<CoinRoller>()))
+            .Callback<CoinRoller>(x => callback = x);
+        
+        _sut.Update(sample);
+        callback.Should().BeEquivalentTo(sample);
+    }
+    
+    [Fact]
+    public void ShouldNotUpdateWhenOriginalNotFound()
+    {
+        var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
+        var sample = CreateCopy(rollers.First());
+        sample.Multiplier = 10;
+        
+        CoinRoller? callback = null;
+        _repository
+            .Setup(x => x.Update(It.IsAny<CoinRoller>()))
+            .Callback<CoinRoller>(x => callback = x);
+        
+        var result = _sut.Update(sample);
+        result.Should().Be(Constants.NotFound);
+        callback.Should().BeNull();
+    }
+    
+    [Fact]
+    public void ShouldUpdateCoinWhenChanged()
+    {
+        var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
+        SetUpMock(rollers);
+        var sample = CreateCopy(rollers.First());
+        sample.Coin = _fixture.Create<Coin>();
+        SetUpMock(sample.Coin);
+        
+        CoinRoller? callback = null;
+        _repository
+            .Setup(x => x.Update(It.IsAny<CoinRoller>()))
             .Callback<CoinRoller>(x => callback = x);
 
         _sut.Update(sample);
         callback.Should().BeEquivalentTo(sample);
+    }
+    
+    
+    [Fact]
+    public void ShouldNotInsertIfRollsChangedAndAlreadyExist()
+    {
+        var rollers = _fixture.CreateMany<CoinRoller>(10).ToList();
+        SetUpMock(rollers);
+        var sample = CreateCopy(rollers.First());
+
+        sample.TreasureLevel = rollers.Last().TreasureLevel;
+        sample.RollMin = rollers.Last().RollMin;
+        
+        CoinRoller? callback = null;
+        _repository
+            .Setup(x => x.Update(It.IsAny<CoinRoller>()))
+            .Callback<CoinRoller>(x => callback = x);
+        
+        var result = _sut.Update(sample);
+        callback.Should().BeNull();
+        result.Should().Be(Constants.Exists);
+    }
+
+    private CoinRoller CreateCopy(CoinRoller roller)
+    {
+        return new CoinRoller
+        {
+            Id = roller.Id,
+            TreasureLevel = roller.TreasureLevel,
+            RollMin = roller.RollMin,
+            Coin = roller.Coin,
+            DiceCount = roller.DiceCount,
+            DiceSides = roller.DiceSides,
+            Multiplier = roller.Multiplier
+        };
     }
 
     private void SetUpMock(IEnumerable<CoinRoller> rollers)
@@ -128,6 +202,13 @@ public class CoinRollerServiceTests
         _repository
             .Setup(x => x.Get<CoinRoller>())
             .Returns(rollers.AsQueryable());
+    }
+
+    private void SetUpMock(Coin coin)
+    {
+        _repository
+            .Setup(x => x.Get<Coin>(It.IsAny<Guid>()))
+            .Returns(coin);
     }
     private void SetUpMock(CoinRoller roller)
     {
