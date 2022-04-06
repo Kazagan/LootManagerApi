@@ -1,3 +1,4 @@
+using Data;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,12 @@ public class CoinRollerService
         .Include(x => x.Coin);
     public CoinRoller? Get(Guid id) => GetAll().FirstOrDefault(x => x.Id == id);
 
+    public IEnumerable<CoinRoller> GetForLevel(int treasureLevel) =>
+        GetAll().Where(x => x.TreasureLevel == treasureLevel);
+
     public CoinRoller? Get(int treasureLevel, int roll)
     {
-        return GetAll()
-            .Where(x => x.TreasureLevel == treasureLevel)
+        return GetForLevel(treasureLevel)
             .OrderBy(x => x.RollMin)
             .LastOrDefault(x => x.RollMin < roll);
     }
@@ -29,15 +32,12 @@ public class CoinRollerService
     public string Create(CoinRoller coinRoller)
     {
         if (Exists(coinRoller))
-        {
-            return "Roller already exists for this treasure level and minimum";
-        }
-
+            return Constants.Exists;
         var coin = _coinService.Get(coinRoller.Coin);
         if (coin is null)
-        {
             return "Must provide existing coin.";
-        }
+        if (coinRoller.IsInvalid())
+            return Constants.Invalid;
 
         coinRoller.Coin = coin;
         _repository.Insert(coinRoller);
@@ -45,9 +45,54 @@ public class CoinRollerService
         return Constants.Success;
     }
 
-    private bool Exists(CoinRoller coinRoller)
+    public string Update(CoinRoller roller)
     {
-        return GetRoll(coinRoller.TreasureLevel, coinRoller.RollMin) is not null;
+        var original = Get(roller.Id);
+        if (original is null)
+            return Constants.NotFound;
+        
+        if (Changed(original, roller) && Exists(roller))
+            return Constants.Exists;
+        
+        if (CoinChanged(original, roller))
+        {
+            var coin = _coinService.Get(roller.Coin);
+            if (coin is null)
+                return "New coin not found";
+            original.Coin = coin;
+        }
+        
+        original.Copy(roller);
+        _repository.Update(original);
+        _repository.Save();
+        return Constants.Success;
+    }
+
+    public bool Delete(Guid Id)
+    {
+        var roller = Get(Id);
+        if (roller is null)
+            return false;
+        _repository.Delete(roller);
+        _repository.Save();
+        return true;
+    }
+
+    private bool CoinChanged(CoinRoller original, CoinRoller roller)
+    {
+        return (roller.Coin.Id != Guid.Empty && original.Coin.Id != roller.Coin.Id) ||
+               (!string.IsNullOrEmpty(roller.Coin.Name) && original.Coin.Name != roller.Coin.Name);
+    }
+
+    private bool Changed(CoinRoller original, CoinRoller roller)
+    {
+        return original.TreasureLevel != roller.TreasureLevel &&
+               original.RollMin != roller.RollMin;
+    }
+
+    private bool Exists(CoinRoller roller)
+    {
+        return GetRoll(roller.TreasureLevel, roller.RollMin) is not null;
     }
     
     

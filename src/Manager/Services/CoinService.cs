@@ -13,33 +13,30 @@ public class CoinService
         _repository = repository;
     }
 
-    public IEnumerable<Coin> GetAll() => _repository.Get<Coin>();
+    public IEnumerable<Coin> Get() => _repository.Get<Coin>();
 
     public Coin? Get(Guid id) => _repository.Get<Coin>(id);
 
     public Coin? Get(string name)
     {
-        return _repository
-            .Get<Coin>()
+        return _repository.Get<Coin>()
             .FirstOrDefault(x => x.Name == name);
     }
 
     public Coin? Get(Coin coin)
     {
         if (coin.Id != Guid.Empty)
-        {
             return Get(coin.Id);
-        }
 
         return string.IsNullOrEmpty(coin.Name) ? null : Get(coin.Name);
     }
 
     public string Create(Coin coin)
     {
+        if (coin.IsInvalid())
+            return Constants.Invalid;
         if (NameIsTaken(coin.Name))
-        {
-            return "Coin Name taken";
-        }
+            return Constants.Exists;
         _repository.Insert(coin);
         _repository.Save();
         return Constants.Success;
@@ -49,16 +46,12 @@ public class CoinService
     {
         var original = Get(coin);
         if (original is null)
-        {
-            return "Coin not found";
-        }
+            return Constants.NotFound;
+        if (NameIsTaken(coin.Name) )
+            return Constants.Exists;
         
-        if (IsNewNameAndValid(coin, original) )
-        {
-            return "Coin name already exists, or is empty";
-        }
-        
-        _repository.Update(coin);
+        original.Copy(coin);
+        _repository.Update(original);
         _repository.Save();
         return Constants.Success;
     }
@@ -67,24 +60,11 @@ public class CoinService
     {
         var coin = Get(id);
         if (coin is null)
-        {
             return false;
-        }
         _repository.Delete(coin);
         _repository.Save();
         return true;
     }
     
-    private bool NameIsTaken(string name)
-    {
-        return Get(name) is not null;
-    }
-    
-
-    private bool IsNewNameAndValid(Coin coin, Coin original)
-    {
-        return original.Name != coin.Name 
-               && !string.IsNullOrEmpty(coin.Name) 
-               && NameIsTaken(coin.Name);
-    }
+    private bool NameIsTaken(string name) => Get(name) is not null;
 }

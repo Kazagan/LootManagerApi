@@ -16,54 +16,46 @@ public class CoinController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult Get(string? name)
     {
-        return Ok(_service.GetAll());
-    }
-
-    [HttpGet]
-    [Route("name/{name}")]
-    public IActionResult Get(string name)
-    {
-        return Ok(_service.Get(name));
+        if(name is null)
+            return Ok(_service.Get());
+        var result = _service.Get(name);
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpGet]
     [Route("{id}")]
     public IActionResult Get(Guid id)
     {
-        return Ok(_service.Get(id));
+        var result = _service.Get(id);
+        return result is null ? NotFound() : Ok(result);
     }
 
-    [HttpPut]
-    public IActionResult Put([FromBody] Coin input)
+    [HttpPost]
+    public IActionResult Create([FromBody] Coin input)
     {
-        if (string.IsNullOrEmpty(input.Name) || input.InGold == 0)
-        {
-            return BadRequest("Needed values not found");
-        }
         var result = _service.Create(input);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
     
-    [HttpPost]
-    public IActionResult Post([FromBody]Coin input)
+    [HttpPut]
+    public IActionResult Update([FromBody]Coin input)
     {
-        if (input.Id == Guid.Empty && string.IsNullOrEmpty(input.Name))
-        {
-            return BadRequest("Must supply Name, unless changing name, then must supply id");
-        }
-        if (string.IsNullOrEmpty(input.Name) && input.InGold == 0)
-        {
-            return BadRequest("No values to change passed, did you want to delete?");
-        }
+        if (input.Id == Guid.Empty)
+            return BadRequest("Must supply Id");
         var result = _service.Update(input);
-        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
+        return result switch
+        {
+            Constants.Success => Ok(input),
+            Constants.NotFound => NotFound(),
+            _ => BadRequest(result)
+        };
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Coin Deleted") : NotFound($"Coin not found.");
+        return _service.Delete(id) ? Ok("Deleted") : NotFound();
     }
 }

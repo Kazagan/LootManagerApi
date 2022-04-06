@@ -11,4 +11,8 @@ public class Good : Entity
     public string Name { get; set; }
     public Coin Coin { get; set; }
     public GoodType GoodType { get; set; }
+    public override bool IsInvalid()
+    {
+        throw new NotImplementedException();
+    }
 }

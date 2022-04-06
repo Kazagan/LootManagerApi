@@ -6,19 +6,8 @@ namespace Manager;
 public static class Constants
 {
     public const string Success = "Success";
+    public const string NotFound = "Not Found";
+    public const string Exists = "Object already Exists";
+    public const string Invalid = "Invalid";
 
-    public static bool IsDefault<TEntity>(TEntity entity) where TEntity : Entity
-    {
-        var isDefault = false;
-        foreach (var property in typeof(TEntity).GetProperties())
-        {
-            property.GetValue(entity, null);
-            if (TypeExtensions.IsDefaultValue(property.GetType(), property))
-            {
-                isDefault = true;
-            }
-        }
-
-        return isDefault;
-    }
 }

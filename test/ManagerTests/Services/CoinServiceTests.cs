@@ -24,14 +24,15 @@ public class CoinServiceTests
         _repository = new Mock<IRepository>();
         _sut = new CoinService(_repository.Object);
     }
-
+    
+    // Reads
     [Fact]
     public void ShouldReturnAll()
     {
         var coins = _fixture.CreateMany<Coin>(100).ToList();
         SetupRepoMock(coins);
 
-        var result = _sut.GetAll();
+        var result = _sut.Get();
         result.Should().BeEquivalentTo(coins);
     }
     
@@ -72,6 +73,7 @@ public class CoinServiceTests
         result.Should().BeEquivalentTo(coin);
     }
 
+    //Reads
     [Fact]
     public void ShouldCallSave()
     {
@@ -108,7 +110,18 @@ public class CoinServiceTests
 
         actual.Should().BeNull();
     }
+
+    [Theory]
+    [InlineData("Gold", 0)]
+    [InlineData("", 10)]
+    public void ShouldNotSaveInvalidCoin(string name, int inGold)
+    {
+        var coin = new Coin {Id = _fixture.Create<Guid>(), Name = name, InGold = inGold};
+        _sut.Create(coin);
+        _repository.Verify(x => x.Save(), Times.Never);
+    }
     
+    // Update
     [Fact]
     public void ShouldCallUpdateWithExpectedNewValues()
     {
@@ -135,18 +148,8 @@ public class CoinServiceTests
         var result = _sut.Update(newCoin);
         result.Should().Be(Constants.Success);
     }
-    
-    [Fact]
-    public void ShouldUpdateIfOnlyNamePassed()
-    {
-        var coin = _fixture.Create<Coin>();
-        SetupRepoMock(new List<Coin> { coin });
 
-        var newCoin = new Coin { Name = coin.Name, InGold = 10 };
-        var result = _sut.Update(newCoin);
-        result.Should().Be(Constants.Success);
-    }
-
+    // Delete
     [Fact]
     public void ShouldCallDeleteForExpectedCoinWhenIdFound()
     {

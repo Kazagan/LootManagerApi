@@ -1,3 +1,4 @@
+using Data;
 using Data.Entities;
 using Data.Repositories;
 using Manager.Services;
@@ -27,32 +28,43 @@ public class CoinRollerController : ControllerBase
     public IActionResult Get(Guid id)
     {
         var roller = _service.Get(id);
-        return Ok(roller);
+        return roller is null ? NotFound(roller): Ok(roller);
     }
 
     [HttpGet]
-    [Route("level")]
     public IActionResult Get(int treasureLevel, int roll)
     {
         if (roll == 0)
-        {
-            var coinRollers = _service.GetAll().Where(x => x.TreasureLevel == treasureLevel);
-            return Ok(coinRollers);
-        }
+            return Ok(_service.GetForLevel(treasureLevel));
+        
         var coinRoller = _service.Get(treasureLevel, roll);
-        return Ok(coinRoller);
+        return coinRoller is null ? NotFound(coinRoller): Ok(coinRoller);
     }
 
-    [Route("Test")]
-    public IActionResult Test([FromBody] CoinRoller coinRoller)
-    {
-        return Ok(Constants.IsDefault(coinRoller));
-    }
-    
-    [HttpPut]
-    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    [HttpPost]
+    public IActionResult Post([FromBody] CoinRoller coinRoller)
     {
         var result = _service.Create(coinRoller);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(coinRoller) : BadRequest(result);
+    }
+
+    [HttpPut]
+    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    {
+        if (coinRoller.Id == Guid.Empty)
+            return BadRequest("Must supply Id");
+        var result = _service.Update(coinRoller);
+        return result switch
+        {
+            Constants.Success => Ok(coinRoller),
+            Constants.NotFound => NotFound(),
+            _ => BadRequest(result)
+        };
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(Guid id)
+    {
+        return _service.Delete(id) ? Ok("Deleted"): NotFound();
     }
 }
