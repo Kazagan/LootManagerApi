@@ -7,7 +7,7 @@ __TODO:__
     +   ~~Get running in Docker~~   
     +   ~~Coin end point~~   
     +   ~~Coin Roller end point~~   
-    -   Acceptance tests
+    -   Acceptance tests  
     +   Goods
 
 Current issues:
