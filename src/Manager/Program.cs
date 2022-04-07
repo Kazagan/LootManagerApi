@@ -4,10 +4,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") is null)
-        {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-        }
         CreateHost(args)
             .Build()
             .Run();

@@ -9,12 +9,4 @@ public static class Dependency
     {
         service.AddScoped<IRepository, Repository<ManagerContext>>();
     }
-    public static void BindServices(this IServiceCollection services)
-    {
-    }
-
-    public static void SqlOptions(this SqlServerDbContextOptionsBuilder options)
-    {
-        options.EnableRetryOnFailure();
-    }
 }
