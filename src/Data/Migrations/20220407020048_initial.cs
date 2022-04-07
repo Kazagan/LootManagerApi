@@ -13,9 +13,9 @@ namespace Data.Migrations
                 name: "Coin",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    InGold = table.Column<decimal>(type: "decimal(10,4)", precision: 10, scale: 4, nullable: false),
-                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    InGold = table.Column<decimal>(type: "numeric(10,4)", precision: 10, scale: 4, nullable: false),
+                    Name = table.Column<string>(type: "Varchar", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,8 +26,8 @@ namespace Data.Migrations
                 name: "GoodType",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "Varchar", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,13 +38,13 @@ namespace Data.Migrations
                 name: "CoinRoller",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TreasureLevel = table.Column<int>(type: "int", nullable: false),
-                    RollMin = table.Column<int>(type: "int", nullable: false),
-                    CoinId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DiceCount = table.Column<int>(type: "int", nullable: false),
-                    DiceSides = table.Column<int>(type: "int", nullable: false),
-                    Multiplier = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TreasureLevel = table.Column<int>(type: "integer", nullable: false),
+                    RollMin = table.Column<int>(type: "integer", nullable: false),
+                    CoinId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DiceCount = table.Column<int>(type: "integer", nullable: false),
+                    DiceSides = table.Column<int>(type: "integer", nullable: false),
+                    Multiplier = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,17 +61,17 @@ namespace Data.Migrations
                 name: "Good",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "Varchar(250)", maxLength: 250, nullable: false),
-                    ValueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GoodTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "Varchar", maxLength: 250, nullable: false),
+                    CoinId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GoodTypeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Good", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Good_Coin_ValueId",
-                        column: x => x.ValueId,
+                        name: "FK_Good_Coin_CoinId",
+                        column: x => x.CoinId,
                         principalTable: "Coin",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -87,10 +87,10 @@ namespace Data.Migrations
                 name: "GoodTypeRoller",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TreasureLevel = table.Column<int>(type: "int", nullable: false),
-                    RollMin = table.Column<int>(type: "int", nullable: false),
-                    GoodTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TreasureLevel = table.Column<int>(type: "integer", nullable: false),
+                    RollMin = table.Column<int>(type: "integer", nullable: false),
+                    GoodTypeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,12 +107,12 @@ namespace Data.Migrations
                 name: "GoodRoller",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RollMin = table.Column<int>(type: "int", nullable: false),
-                    DiceCount = table.Column<int>(type: "int", nullable: false),
-                    DiceSides = table.Column<int>(type: "int", nullable: false),
-                    Multiplier = table.Column<int>(type: "int", nullable: false),
-                    GoodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RollMin = table.Column<int>(type: "integer", nullable: false),
+                    DiceCount = table.Column<int>(type: "integer", nullable: false),
+                    DiceSides = table.Column<int>(type: "integer", nullable: false),
+                    Multiplier = table.Column<int>(type: "integer", nullable: false),
+                    GoodId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,14 +136,14 @@ namespace Data.Migrations
                 columns: new[] { "TreasureLevel", "RollMin" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Good_CoinId",
+                table: "Good",
+                column: "CoinId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Good_GoodTypeId",
                 table: "Good",
                 column: "GoodTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Good_ValueId",
-                table: "Good",
-                column: "ValueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GoodRoller_GoodId",

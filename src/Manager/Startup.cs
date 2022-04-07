@@ -23,9 +23,9 @@ public class Startup
         services.AddHttpClient();
         
         services.AddDbContext<ManagerContext>(
-            options => options.UseSqlServer(
+            options => options.UseNpgsql(
                 _configuration.GetConnectionString("manager"),
-                builder => builder.SqlOptions()
+                builder => builder.EnableRetryOnFailure().CommandTimeout(120)
             ));
     }
 
@@ -40,12 +40,12 @@ public class Startup
         }
 
         app.UseRouting();
-        // DatabaseService.MigrationInitialisation(app);
 
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
         });
+        DatabaseService.MigrationInitialisation(app);
     }
 }
