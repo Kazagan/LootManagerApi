@@ -18,10 +18,10 @@ public class Startup
         services.AddControllers();
         services.AddSwaggerGen();
         services.AddEndpointsApiExplorer();
-        
+
         // services.BindServices();
         services.AddHttpClient();
-        
+
         services.AddDbContext<ManagerContext>(
             options => options.UseNpgsql(
                 _configuration.GetConnectionString("manager"),

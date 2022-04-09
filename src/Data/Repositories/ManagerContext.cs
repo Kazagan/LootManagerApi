@@ -7,14 +7,14 @@ public class ManagerContext : DbContext
 {
     public ManagerContext(DbContextOptions<ManagerContext> options) : base(options)
     {
-        
+
     }
 
     public ManagerContext() : base()
     {
-        
+
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.MapCoins();

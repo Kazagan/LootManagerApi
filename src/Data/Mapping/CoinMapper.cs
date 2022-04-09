@@ -11,12 +11,12 @@ public static class CoinMapper
         {
             entity
                 .HasKey(e => e.Id);
-            
+
             entity
                 .Property(e => e.Name)
                 .IsRequired()
                 .VarcharWithMaxLength(250);
-            
+
             entity
                 .Property(e => e.InGold)
                 .IsRequired()

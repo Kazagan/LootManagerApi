@@ -13,7 +13,7 @@ public class CoinRoller : Entity
     public int DiceSides { get; set; }
     public int Multiplier { get; set; }
 
-    public override bool IsInvalid() => 
+    public override bool IsInvalid() =>
         TreasureLevel == 0 || RollMin == 0 || DiceCount == 0 || DiceSides == 0 || Multiplier == 0 || Coin.IsInvalid();
 
     public void Copy(CoinRoller roller)

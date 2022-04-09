@@ -49,11 +49,15 @@ public class CoinRollerService
     {
         var original = Get(roller.Id);
         if (original is null)
+        {
             return Constants.NotFound;
-        
+        }
+
         if (Changed(original, roller) && Exists(roller))
+        {
             return Constants.Exists;
-        
+        }
+
         if (CoinChanged(original, roller))
         {
             var coin = _coinService.Get(roller.Coin);
@@ -61,7 +65,7 @@ public class CoinRollerService
                 return "New coin not found";
             original.Coin = coin;
         }
-        
+
         original.Copy(roller);
         _repository.Update(original);
         _repository.Save();
@@ -72,7 +76,9 @@ public class CoinRollerService
     {
         var roller = Get(Id);
         if (roller is null)
+        {
             return false;
+        }
         _repository.Delete(roller);
         _repository.Save();
         return true;
@@ -94,10 +100,10 @@ public class CoinRollerService
     {
         return GetRoll(roller.TreasureLevel, roller.RollMin) is not null;
     }
-    
-    
+
+
 
     // Get for specific treasure level and roll, rather than the next, used for ensuring roll is not already set.
-    private CoinRoller? GetRoll(int treasureLevel, int rollMin) => 
+    private CoinRoller? GetRoll(int treasureLevel, int rollMin) =>
         GetAll().FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.RollMin == rollMin);
 }
