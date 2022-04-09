@@ -20,7 +20,7 @@ public class CoinService
     public Coin? Get(string name)
     {
         return _repository.Get<Coin>()
-            .FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
     }
 
     public Coin? Get(Coin coin)
