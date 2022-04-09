@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "manager": "Host=db;Username=lootManager;Password=Password#123;Database=lootManager_db"
+    "manager": "Host=host.docker.internal,5432;Username=lootManager;Password=Password#123;Database=lootManager_db"
   },
   "Logging": {
     "LogLevel": {
