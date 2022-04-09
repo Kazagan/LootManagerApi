@@ -17,7 +17,7 @@ public static class GoodTypeRollerMapper
 
             entity
                 .Property(e => e.TreasureLevel)
-                .IsRequired(); 
+                .IsRequired();
             entity
                 .Property(e => e.RollMin)
                 .IsRequired();

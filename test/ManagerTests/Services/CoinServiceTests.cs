@@ -24,7 +24,7 @@ public class CoinServiceTests
         _repository = new Mock<IRepository>();
         _sut = new CoinService(_repository.Object);
     }
-    
+
     // Reads
     [Fact]
     public void ShouldReturnAll()
@@ -35,7 +35,7 @@ public class CoinServiceTests
         var result = _sut.Get();
         result.Should().BeEquivalentTo(coins);
     }
-    
+
     [Fact]
     public void ShouldReturnCoinIfIdExists()
     {
@@ -44,7 +44,7 @@ public class CoinServiceTests
         var result = _sut.Get(coin.Id);
         result.Should().BeEquivalentTo(coin);
     }
-    
+
     [Fact]
     public void ShouldReturnNullIfIdDoesntExists()
     {
@@ -53,7 +53,7 @@ public class CoinServiceTests
         var result = _sut.Get(new Guid());
         result.Should().BeNull();
     }
-    
+
     [Fact]
     public void ShouldReturnNullIfNameDoesntExists()
     {
@@ -62,7 +62,7 @@ public class CoinServiceTests
         var result = _sut.Get("");
         result.Should().BeNull();
     }
-    
+
     [Fact]
     public void ShouldReturnCoinIfNameExists()
     {
@@ -116,11 +116,11 @@ public class CoinServiceTests
     [InlineData("", 10)]
     public void ShouldNotSaveInvalidCoin(string name, int inGold)
     {
-        var coin = new Coin {Id = _fixture.Create<Guid>(), Name = name, InGold = inGold};
+        var coin = new Coin { Id = _fixture.Create<Guid>(), Name = name, InGold = inGold };
         _sut.Create(coin);
         _repository.Verify(x => x.Save(), Times.Never);
     }
-    
+
     // Update
     [Fact]
     public void ShouldCallUpdateWithExpectedNewValues()
@@ -137,7 +137,7 @@ public class CoinServiceTests
         _sut.Update(newCoin);
         callBack.Should().BeEquivalentTo(newCoin);
     }
-    
+
     [Fact]
     public void ShouldUpdateIfIdAndInGoldPassed()
     {

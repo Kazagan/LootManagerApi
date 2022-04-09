@@ -18,8 +18,10 @@ public class CoinController : ControllerBase
     [HttpGet]
     public IActionResult Get(string? name)
     {
-        if(name is null)
+        if (name is null)
+        {
             return Ok(_service.Get());
+        }
         var result = _service.Get(name);
         return result is null ? NotFound() : Ok(result);
     }
@@ -38,12 +40,14 @@ public class CoinController : ControllerBase
         var result = _service.Create(input);
         return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
     }
-    
+
     [HttpPut]
-    public IActionResult Update([FromBody]Coin input)
+    public IActionResult Update([FromBody] Coin input)
     {
         if (input.Id == Guid.Empty)
+        {
             return BadRequest("Must supply Id");
+        }
         var result = _service.Update(input);
         return result switch
         {

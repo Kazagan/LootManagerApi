@@ -20,13 +20,15 @@ public class CoinService
     public Coin? Get(string name)
     {
         return _repository.Get<Coin>()
-            .FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
     }
 
     public Coin? Get(Coin coin)
     {
         if (coin.Id != Guid.Empty)
+        {
             return Get(coin.Id);
+        }
 
         return string.IsNullOrEmpty(coin.Name) ? null : Get(coin.Name);
     }
@@ -34,9 +36,13 @@ public class CoinService
     public string Create(Coin coin)
     {
         if (coin.IsInvalid())
+        {
             return Constants.Invalid;
+        }
         if (NameIsTaken(coin.Name))
+        {
             return Constants.Exists;
+        }
         _repository.Insert(coin);
         _repository.Save();
         return Constants.Success;
@@ -46,10 +52,14 @@ public class CoinService
     {
         var original = Get(coin);
         if (original is null)
+        {
             return Constants.NotFound;
-        if (NameIsTaken(coin.Name) )
+        }
+        if (NameIsTaken(coin.Name))
+        {
             return Constants.Exists;
-        
+        }
+
         original.Copy(coin);
         _repository.Update(original);
         _repository.Save();
@@ -60,11 +70,13 @@ public class CoinService
     {
         var coin = Get(id);
         if (coin is null)
+        {
             return false;
+        }
         _repository.Delete(coin);
         _repository.Save();
         return true;
     }
-    
+
     private bool NameIsTaken(string name) => Get(name) is not null;
 }

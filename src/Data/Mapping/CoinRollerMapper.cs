@@ -11,7 +11,7 @@ public static class CoinRollerMapper
         {
             entity.HasKey(e => e.Id);
 
-            entity.HasIndex(x => new {x.TreasureLevel, x.RollMin});
+            entity.HasIndex(x => new { x.TreasureLevel, x.RollMin });
 
             entity
                 .Property(e => e.TreasureLevel)

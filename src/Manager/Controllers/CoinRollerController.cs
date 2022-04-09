@@ -28,17 +28,19 @@ public class CoinRollerController : ControllerBase
     public IActionResult Get(Guid id)
     {
         var roller = _service.Get(id);
-        return roller is null ? NotFound(roller): Ok(roller);
+        return roller is null ? NotFound(roller) : Ok(roller);
     }
 
     [HttpGet]
     public IActionResult Get(int treasureLevel, int roll)
     {
         if (roll == 0)
+        {
             return Ok(_service.GetForLevel(treasureLevel));
-        
+        }
+
         var coinRoller = _service.Get(treasureLevel, roll);
-        return coinRoller is null ? NotFound(coinRoller): Ok(coinRoller);
+        return coinRoller is null ? NotFound(coinRoller) : Ok(coinRoller);
     }
 
     [HttpPost]
@@ -52,7 +54,9 @@ public class CoinRollerController : ControllerBase
     public IActionResult Put([FromBody] CoinRoller coinRoller)
     {
         if (coinRoller.Id == Guid.Empty)
+        {
             return BadRequest("Must supply Id");
+        }
         var result = _service.Update(coinRoller);
         return result switch
         {
@@ -65,6 +69,6 @@ public class CoinRollerController : ControllerBase
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Deleted"): NotFound();
+        return _service.Delete(id) ? Ok("Deleted") : NotFound();
     }
 }
