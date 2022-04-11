@@ -2,18 +2,14 @@ namespace Data.Entities;
 
 public class CoinRoller : Entity
 {
-    public CoinRoller()
-    {
-        Coin = new Coin();
-    }
     public int TreasureLevel { get; set; }
     public int RollMin { get; set; }
-    public Coin Coin { get; set; }
+    public Coin Coin { get; set; } = new ();
     public int DiceCount { get; set; }
     public int DiceSides { get; set; }
     public int Multiplier { get; set; }
 
-    public override bool IsInvalid() =>
+    public virtual bool IsInvalid() =>
         TreasureLevel == 0 || RollMin == 0 || DiceCount == 0 || DiceSides == 0 || Multiplier == 0 || Coin.IsInvalid();
 
     public void Copy(CoinRoller roller)

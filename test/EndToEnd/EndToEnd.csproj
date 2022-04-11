@@ -27,8 +27,4 @@
     <ProjectReference Include="..\..\src\Data\Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Utils" />
-  </ItemGroup>
-
 </Project>
