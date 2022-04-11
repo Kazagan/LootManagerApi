@@ -45,7 +45,7 @@ public class CoinService
         }
         _repository.Insert(coin);
         _repository.Save();
-        return Constants.Success;
+        return coin.Id.ToString();
     }
 
     public string Update(Coin coin)
@@ -53,7 +53,7 @@ public class CoinService
         var original = Get(coin);
         if (original is null)
         {
-            return Constants.NotFound;
+            return Create(coin);
         }
         if (NameIsTaken(coin.Name))
         {

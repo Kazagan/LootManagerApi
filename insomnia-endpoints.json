@@ -1,223 +1,79 @@
+Expected coins 
 {
-  "_type": "export",
-  "__export_format": 4,
-  "__export_date": "2022-04-03T00:11:55.614Z",
-  "__export_source": "insomnia.desktop.app:v2021.6.0",
-  "resources": [
+  Data.Entities.Coin
     {
-      "_id": "req_698f3cbb30b14ac8aba3017bb3a8b3b5",
-      "parentId": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "modified": 1644380865350,
-      "created": 1644208576202,
-      "url": "http://localhost:5050/Coin/name/Gold",
-      "name": "ById",
-      "description": "",
-      "method": "GET",
-      "body": {},
-      "parameters": [],
-      "headers": [],
-      "authentication": {},
-      "metaSortKey": -1644208576202,
-      "isPrivate": false,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "_type": "request"
+      Id = {3e4db0e0-eb1b-4e18-8276-250ffc4e220c},
+      InGold = 0.1000M,
+      Name = "Silver"
     },
+    Data.Entities.Coin
     {
-      "_id": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "parentId": "fld_2bc8cc42154f4b9aa69eb2e28e13f90d",
-      "modified": 1644208522529,
-      "created": 1644208522529,
-      "name": "Coin",
-      "description": "",
-      "environment": {},
-      "environmentPropertyOrder": null,
-      "metaSortKey": -1644208522530,
-      "_type": "request_group"
+      Id = {61082ffc-219b-4874-b2c1-d0197a76c250},
+      InGold = 0.0100M,
+      Name = "Copper"
     },
+    Data.Entities.Coin
     {
-      "_id": "fld_2bc8cc42154f4b9aa69eb2e28e13f90d",
-      "parentId": "wrk_d60e88cb3fc440c594a0c38820dee890",
-      "modified": 1644193171811,
-      "created": 1644193171811,
-      "name": "LootManagerAPi",
-      "description": "",
-      "environment": {},
-      "environmentPropertyOrder": null,
-      "metaSortKey": -1644193171811,
-      "_type": "request_group"
+      Id = {77243ad5-2208-44a3-8544-7e429682957b},
+      InGold = 1.0000M,
+      Name = "Gold"
     },
+    Data.Entities.Coin
     {
-      "_id": "wrk_d60e88cb3fc440c594a0c38820dee890",
-      "parentId": null,
-      "modified": 1636520542194,
-      "created": 1636520542194,
-      "name": "Dev",
-      "description": "",
-      "scope": "collection",
-      "_type": "workspace"
-    },
-    {
-      "_id": "req_a8b1664cd82d4468ab0829c3c2561109",
-      "parentId": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "modified": 1647213003412,
-      "created": 1644193193238,
-      "url": "http://localhost:5050/Coin",
-      "name": "CreateCoin",
-      "description": "",
-      "method": "PUT",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n\t\"Name\": \"Copper\",\n\t\"InGold\": \".01\"\n}"
-      },
-      "parameters": [],
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json",
-          "id": "pair_8acd9669a3a048fdab71cceea717cc49"
-        }
-      ],
-      "authentication": {},
-      "metaSortKey": -1644193178901,
-      "isPrivate": false,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "_type": "request"
-    },
-    {
-      "_id": "req_dfaec411aebe4830a9c24073a45526f3",
-      "parentId": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "modified": 1644208538953,
-      "created": 1644207667104,
-      "url": "http://localhost:5050/Coin",
-      "name": "DeleteCoin",
-      "description": "",
-      "method": "DELETE",
-      "body": {
-        "mimeType": "multipart/form-data",
-        "params": [
-          {
-            "id": "pair_273559bf551b4ba8afb2a40c82e67034",
-            "name": "Id",
-            "value": "3",
-            "description": ""
-          }
-        ]
-      },
-      "parameters": [],
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "multipart/form-data",
-          "id": "pair_5da341de72ac4baebfcdc4f0f43075f5"
-        }
-      ],
-      "authentication": {},
-      "metaSortKey": -1644193178876,
-      "isPrivate": false,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "_type": "request"
-    },
-    {
-      "_id": "req_468bff33cdc14a00b305346e7fd1921f",
-      "parentId": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "modified": 1648944583405,
-      "created": 1644208561199,
-      "url": "http://localhost:5050/Coin",
-      "name": "UpdateCoin",
-      "description": "",
-      "method": "POST",
-      "body": {
-        "mimeType": "application/json",
-        "text": "{\n    \"name\": \"Silver\",\n    \"id\": \"e6d824b9-fd45-443f-f4ad-08da05467ddd\"\n}"
-      },
-      "parameters": [],
-      "headers": [
-        {
-          "name": "Content-Type",
-          "value": "application/json",
-          "id": "pair_f3ba8b85797541fdac27aaa9f4852b72"
-        }
-      ],
-      "authentication": {},
-      "metaSortKey": -1644193178863.5,
-      "isPrivate": false,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "_type": "request"
-    },
-    {
-      "_id": "req_75afc2182f67499a86992af9d723e50a",
-      "parentId": "fld_5bfa6cb3325f497a8f30aed7bbbf7f40",
-      "modified": 1647213022141,
-      "created": 1644193178851,
-      "url": "http://localhost:5050/Coin",
-      "name": "GetAllCoins",
-      "description": "",
-      "method": "GET",
-      "body": {},
-      "parameters": [],
-      "headers": [],
-      "authentication": {},
-      "metaSortKey": -1644193178851,
-      "isPrivate": false,
-      "settingStoreCookies": true,
-      "settingSendCookies": true,
-      "settingDisableRenderRequestBody": false,
-      "settingEncodeUrl": true,
-      "settingRebuildPath": true,
-      "settingFollowRedirects": "global",
-      "_type": "request"
-    },
-    {
-      "_id": "env_e13256ae9f0e9df46d3a171659ba48ef61f4b0cf",
-      "parentId": "wrk_d60e88cb3fc440c594a0c38820dee890",
-      "modified": 1636520542205,
-      "created": 1636520542205,
-      "name": "Base Environment",
-      "data": {},
-      "dataPropertyOrder": null,
-      "color": null,
-      "isPrivate": false,
-      "metaSortKey": 1636520542205,
-      "_type": "environment"
-    },
-    {
-      "_id": "jar_e13256ae9f0e9df46d3a171659ba48ef61f4b0cf",
-      "parentId": "wrk_d60e88cb3fc440c594a0c38820dee890",
-      "modified": 1636520542208,
-      "created": 1636520542208,
-      "name": "Default Jar",
-      "cookies": [],
-      "_type": "cookie_jar"
-    },
-    {
-      "_id": "spc_c5aea9c5ec5341ccaf6cf44bfa503bc5",
-      "parentId": "wrk_d60e88cb3fc440c594a0c38820dee890",
-      "modified": 1636520542199,
-      "created": 1636520542199,
-      "fileName": "Dev",
-      "contents": "",
-      "contentType": "yaml",
-      "_type": "api_spec"
+      Id = {6f3802fd-b270-4211-a474-327d19e0bb4a},
+      InGold = 10.0000M,
+      Name = "Plat"
     }
-  ]
+    }
+to contain {
+Data.Entities.Coin
+{
+Id = {2ff5bf09-62db-4bea-9641-baa6575abb65},
+InGold = 1M,
+Name = "Gold"
+},
+Data.Entities.Coin
+{
+Id = {84b9be0e-3aa5-47aa-b7e0-340bc929755f},
+InGold = 0.1M,
+Name = "Silver"
+},
+Data.Entities.Coin
+{
+Id = {f3944bc2-a4d6-4622-be1a-58b0a05a993c},
+InGold = 0.01M,
+Name = "Copper"
+},
+Data.Entities.Coin
+{
+Id = {97ae3f5c-0ea1-481a-b084-191a64556a4f},
+InGold = 10M,
+Name = "Plat"
+}
+}
+, but could not find {
+Data.Entities.Coin
+{
+Id = {2ff5bf09-62db-4bea-9641-baa6575abb65},
+InGold = 1M,
+Name = "Gold"
+},
+Data.Entities.Coin
+{
+Id = {84b9be0e-3aa5-47aa-b7e0-340bc929755f},
+InGold = 0.1M,
+Name = "Silver"
+},
+Data.Entities.Coin
+{
+Id = {f3944bc2-a4d6-4622-be1a-58b0a05a993c},
+InGold = 0.01M,
+Name = "Copper"
+},
+Data.Entities.Coin
+{
+Id = {97ae3f5c-0ea1-481a-b084-191a64556a4f},
+InGold = 10M,
+Name = "Plat"
+}
 }
