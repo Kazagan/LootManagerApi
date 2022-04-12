@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AutoFixture;
 using Data.Entities;
@@ -44,6 +45,37 @@ public class CoinTests : IDisposable
         await Delete(new List<Coin> {coin});
     }
 
+    [Theory]
+    [InlineData("", 1)]
+    [InlineData("Gold", 0)]
+    public async Task ShouldReturnBadWhenInvalidPassed(string name, decimal inGold)
+    {
+        var coin = new Coin {Name = name, InGold = inGold};
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+        
+        var response = await _client.ExecutePostAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task ShouldReturnBadRequestWhenNameTaken()
+    {
+        var coin = _fixture.Create<Coin>();
+        await _apiHelper.Insert(coin);
+        
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+        
+        var response = await _client.ExecutePostAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        await Delete(new List<Coin> {coin});
+    }
+    
+    // Get
     [Fact]
     public async Task ShouldReturnCoinByName()
     {
@@ -58,6 +90,26 @@ public class CoinTests : IDisposable
         actual.Should().BeEquivalentTo(expected);
         await Delete(coins);
     }
+
+    [Fact]
+    public async Task ShouldGetNotFoundById()
+    {
+        var request = new RestRequest($"{_uri}/{Guid.Empty}");
+        var response = await _client.GetAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
+    public async Task ShouldGetNotFoundByName()
+    {
+        var request = new RestRequest($"{_uri}?name=''");
+        var response = await _client.GetAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+
 
     [Fact]
     public async Task ShouldReturnCoinById()
@@ -91,7 +143,7 @@ public class CoinTests : IDisposable
     {
         await _apiHelper.Delete(coins.Select(x => x.Id));
     }
-
+    
     public void Dispose()
     {
         Task.Run(() => _apiHelper.Reset<Coin>());
