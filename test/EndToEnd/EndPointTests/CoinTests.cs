@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -12,97 +13,95 @@ using Xunit;
 
 namespace EndToEnd.EndPointTests;
 
-public class CoinTests
+public class CoinTests : IDisposable
 {
     private readonly RestClient _client;
     private readonly Fixture _fixture;
-    private const string Uri = "http://localHost:5555/coin";
-    private readonly Coin _goldCoin = new (){ Name = "Gold", InGold = 1.0000M }; 
-    private readonly Coin _silverCoin = new (){ Name = "Silver", InGold = 0.1000M }; 
-    private readonly Coin _copperCoin = new (){ Name = "Copper", InGold = 0.0100M }; 
-    private readonly Coin _platCoin = new (){ Name = "Plat", InGold = 10.0000M }; 
+    private readonly Uri _uri;
+    private readonly ApiHelper _apiHelper;
+    
     
     public CoinTests()
     {
+        _uri = new Uri("http://localHost:5555/coin", UriKind.Absolute);
         _client = new RestClient();
         _fixture = new Fixture();
-        Task.Run(Setup);
+        _apiHelper = new ApiHelper(_uri);
     }
 
     [Fact]
-    public async Task ShouldCreateNewCoin()
+    public async Task ShouldCreateNewCoinAndReturnGuid()
     {
         var coin = _fixture.Create<Coin>();
 
-        var request = new RestRequest(Uri)
+        var request = new RestRequest(_uri)
             .AddJsonBody(coin);
         
         var response = await _client.ExecutePostAsync(request);
         response.IsSuccessful.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         Guid.TryParse(response.Content, out var x).Should().BeTrue();
+        await Delete(new List<Coin> {coin});
     }
 
     [Fact]
     public async Task ShouldReturnCoinByName()
     {
-        var request = new RestRequest($"{Uri}?name={_goldCoin.Name}");
+        var coins = _fixture.CreateMany<Coin>(3).ToList();
+        await _apiHelper.Insert(coins);
+
+        var expected = coins.First();
+        
+        var request = new RestRequest($"{_uri}?name={expected.Name}");
         var response = await _client.GetAsync(request);
-        var coin = JsonConvert.DeserializeObject<Coin>(response.Content);
-        coin.Should().BeEquivalentTo(_goldCoin);
+        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
+        actual.Should().BeEquivalentTo(expected);
+        await Delete(coins);
     }
-    
+
     [Fact]
     public async Task ShouldReturnCoinById()
     {
-        var request = new RestRequest($"{Uri}/{_silverCoin.Id}");
+        var coins = _fixture.CreateMany<Coin>(3).ToList();
+        await _apiHelper.Insert(coins);
+
+        var expected = coins.First();
+        
+        var request = new RestRequest($"{_uri}/{expected.Id}");
         var response = await _client.GetAsync(request);
-        var coin = JsonConvert.DeserializeObject<Coin>(response.Content);
-        coin.Should().BeEquivalentTo(_silverCoin);
+        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
+        actual.Should().BeEquivalentTo(expected);
+        await Delete(coins);
     }
 
-    //TODO refactor, as this might fail if insert test runs first.
     [Fact]
     public async Task ShouldReturnAll()
     {
-        var request = new RestRequest(Uri);
+        var coins = _fixture.CreateMany<Coin>(10).ToList();
+        await _apiHelper.Insert(coins);
+
+        var request = new RestRequest(_uri);
         var response = await _client.GetAsync(request);
-        var coins = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
-
-        coins.Should().BeEquivalentTo(new List<Coin> { _goldCoin, _silverCoin, _copperCoin, _platCoin });
+        var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
+        actual.Should().ContainEquivalentOf(coins);
+        await Delete(coins);
     }
 
-    private async Task Setup()
+    private async Task Delete(IEnumerable<Coin> coins)
     {
-        var dataSeed = new DataSeed();
-        await dataSeed.Reset<Coin>(Uri);
-        
-        _goldCoin.Id = Guid.Parse(await dataSeed.Insert(_goldCoin, Uri));
-        _silverCoin.Id = Guid.Parse(await dataSeed.Insert(_silverCoin, Uri));
-        _copperCoin.Id = Guid.Parse(await dataSeed.Insert(_copperCoin, Uri));
-        _platCoin.Id = Guid.Parse(await dataSeed.Insert(_platCoin, Uri));
+        await _apiHelper.Delete(coins.Select(x => x.Id));
     }
 
-    private void Delete(IEnumerable<Coin> coins)
+    public void Dispose()
     {
-        foreach (var coin in coins)
-        {
-            var request = new RestRequest($"{Uri}?id={coin.Id}");
-            _client.DeleteAsync(request);
-        }
-    }
-
-    private void Reset()
-    {
-        var coins = GetAll();
-        Delete(coins);
-    }
-
-    private IEnumerable<Coin> GetAll()
-    {
-        var request = new RestRequest(Uri);
-        var response = _client.GetAsync(request).Result;
-        var coins = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
-        return coins;
+        Task.Run(() => _apiHelper.Reset<Coin>());
+        _client.Dispose();
     }
 }
+
+/*
+Xunit.Sdk.XunitException
+Expected actual 
+ to contain equivalent of 
+    
+*/
