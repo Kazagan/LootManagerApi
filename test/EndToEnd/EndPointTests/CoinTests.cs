@@ -83,7 +83,7 @@ public class CoinTests : IDisposable
         var request = new RestRequest(_uri);
         var response = await _client.GetAsync(request);
         var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
-        actual.Should().ContainEquivalentOf(coins);
+        actual.Should().BeEquivalentTo(coins);
         await Delete(coins);
     }
 
