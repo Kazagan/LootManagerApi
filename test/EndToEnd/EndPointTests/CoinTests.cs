@@ -98,10 +98,3 @@ public class CoinTests : IDisposable
         _client.Dispose();
     }
 }
-
-/*
-Xunit.Sdk.XunitException
-Expected actual 
- to contain equivalent of 
-    
-*/
