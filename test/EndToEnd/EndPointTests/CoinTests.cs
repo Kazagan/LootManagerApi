@@ -53,7 +53,7 @@ public class CoinTests : IDisposable
         var request = new RestRequest(_uri)
             .AddJsonBody(coin);
         
-        var response = await _client.ExecutePutAsync(request);
+        var response = await _client.ExecutePostAsync(request);
         response.IsSuccessful.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -67,12 +67,13 @@ public class CoinTests : IDisposable
         var request = new RestRequest(_uri)
             .AddJsonBody(coin);
         
-        var response = await _client.ExecutePutAsync(request);
+        var response = await _client.ExecutePostAsync(request);
         response.IsSuccessful.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
     
     // Put
+    //Todo Below test is failing at times when run through cli
     [Theory]
     [InlineData("", 1)]
     [InlineData("Gold", 0)]
@@ -91,10 +92,10 @@ public class CoinTests : IDisposable
     [Fact]
     public async Task WhenNameTakenAndExistsShouldBadRequest()
     {
-        var coin = _fixture.Create<Coin>();
-        await _apiHelper.Insert(coin);
+        var coins = _fixture.CreateMany<Coin>().ToList();
+        await _apiHelper.Insert(coins);
 
-        coin.InGold = .01M;
+        var coin = new Coin {Id = coins.First().Id, Name = coins.Last().Name, InGold = 10M};
         var request = new RestRequest(_uri)
             .AddJsonBody(coin);
         
