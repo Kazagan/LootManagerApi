@@ -49,10 +49,6 @@ public class CoinController : ControllerBase
     [HttpPut]
     public IActionResult Update([FromBody] Coin input)
     {
-        if (input.Id == Guid.Empty)
-        {
-            return BadRequest("Must supply Id");
-        }
         var result = _service.Update(input);
         return result switch
         {
