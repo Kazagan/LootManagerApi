@@ -73,23 +73,40 @@ public class CoinTests : IDisposable
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         await Delete(new List<Coin> {coin});
     }
+    
+    // Put
+    [Theory]
+    [InlineData("", 1)]
+    [InlineData("Gold", 0)]
+    public async Task WhenNotExistsShouldFailCreateWhenInvalid(string name, decimal inGold)
+    {
+        var coin = new Coin {Name = name, InGold = inGold};
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+        
+        var response = await _client.ExecutePutAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    
 
     // Get
     [Fact]
     public async Task ShouldReturnCoinByName()
     {
-        var coins = _fixture.CreateMany<Coin>(3).ToList();
+        var coins = _fixture.CreateMany<Coin>(100).ToList();
         await _apiHelper.Insert(coins);
-
-        var expected = coins.First();
         
-        var request = new RestRequest($"{_uri}?name={expected.Name}");
-        var response = await _client.GetAsync(request);
-        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
-        actual.Should().BeEquivalentTo(expected);
+        foreach (var expected in coins)
+        {
+            var actual = await GetByName(expected);
+            actual.Should().BeEquivalentTo(expected);
+        }
         await Delete(coins);
     }
-
+    
     [Fact]
     public async Task ShouldGetNotFoundById()
     {
@@ -108,20 +125,17 @@ public class CoinTests : IDisposable
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-
-
     [Fact]
     public async Task ShouldReturnCoinById()
     {
-        var coins = _fixture.CreateMany<Coin>(3).ToList();
+        var coins = _fixture.CreateMany<Coin>(100).ToList();
         await _apiHelper.Insert(coins);
 
-        var expected = coins.First();
-        
-        var request = new RestRequest($"{_uri}/{expected.Id}");
-        var response = await _client.GetAsync(request);
-        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
-        actual.Should().BeEquivalentTo(expected);
+        foreach (var expected in coins)
+        {
+            var actual = await _apiHelper.GetById<Coin>(expected.Id);
+            actual.Should().BeEquivalentTo(expected);
+        }
         await Delete(coins);
     }
 
@@ -143,6 +157,14 @@ public class CoinTests : IDisposable
     private async Task Delete(IEnumerable<Coin> coins)
     {
         await _apiHelper.Delete(coins.Select(x => x.Id));
+    }
+    
+    private async Task<Coin> GetByName(Coin expected)
+    {
+        var request = new RestRequest($"{_uri}?name={expected.Name}");
+        var response = await _client.GetAsync(request);
+        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
+        return actual;
     }
     
     public void Dispose()

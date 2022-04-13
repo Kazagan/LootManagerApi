@@ -27,6 +27,14 @@ public class ApiHelper
         var response = await _client.PostAsync(request);
         return response.Content!;
     }
+
+    public async Task<TEntity> GetById<TEntity>(Guid guid) where TEntity : Entity
+    {
+        var request = new RestRequest($"{_uri}/{guid}");
+        var response = await _client.GetAsync(request);
+        var result = JsonConvert.DeserializeObject<TEntity>(response.Content);
+        return result;
+    }
     
     public async Task Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity
     {
