@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AutoFixture;
 using Data.Entities;
@@ -74,7 +73,7 @@ public class CoinTests : IDisposable
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         await Delete(new List<Coin> {coin});
     }
-    
+
     // Get
     [Fact]
     public async Task ShouldReturnCoinByName()
@@ -135,7 +134,9 @@ public class CoinTests : IDisposable
         var request = new RestRequest(_uri);
         var response = await _client.GetAsync(request);
         var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
-        actual.Should().BeEquivalentTo(coins);
+
+        coins.Select(expectation => actual.Should().ContainEquivalentOf(expectation));
+        
         await Delete(coins);
     }
 
