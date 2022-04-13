@@ -18,14 +18,23 @@ public class ApiHelper
         _client = new RestClient();
         _uri = uri;
     }
-
-    public async Task<string> Insert<TEntity>(TEntity entity) where TEntity : Entity
+    
+    // TODO figure how to use this to lessen code duplication without expected bad requests throwing erros.
+    public async Task<RestResponse> Insert<TEntity>(TEntity entity) where TEntity : Entity
     {
         var request = new RestRequest(_uri)
             .AddJsonBody(entity);
 
-        var response = await _client.PostAsync(request);
-        return response.Content!;
+        return  await _client.PostAsync(request);
+    }
+    
+    public async Task<RestResponse> Update<TEntity>(TEntity entity) where TEntity : Entity
+    {
+        var request = new RestRequest(_uri)
+            .AddJsonBody(entity);
+
+        var response = await _client.PutAsync(request);
+        return response!;
     }
 
     public async Task<TEntity> GetById<TEntity>(Guid guid) where TEntity : Entity
@@ -47,16 +56,16 @@ public class ApiHelper
     public async Task Reset<TEntity>() where TEntity : Entity
     {
         var ids = await GetAll<TEntity>();
-        await Delete(ids);
-    }
-
-    public async Task Delete(IEnumerable<Guid> ids)
-    {
         foreach (var id in ids)
         {
-            var request = new RestRequest($"{_uri}?id={id}");
-            await _client.DeleteAsync(request);
+            await Delete(id);
         }
+    }
+
+    public async Task Delete(Guid id)
+    {
+        var request = new RestRequest($"{_uri}?id={id}");
+        await _client.DeleteAsync(request);
     }
 
     private async Task<IEnumerable<Guid>> GetAll<TEntity>() where TEntity : Entity

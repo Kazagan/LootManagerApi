@@ -55,7 +55,7 @@ public class CoinService
         {
             return Create(coin);
         }
-        if (NameIsTaken(coin.Name))
+        if (coin.Name != original.Name && NameIsTaken(coin.Name))
         {
             return Constants.Exists;
         }
