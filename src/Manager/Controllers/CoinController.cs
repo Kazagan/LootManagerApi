@@ -42,7 +42,7 @@ public class CoinController : ControllerBase
         {
             Constants.Invalid => BadRequest("Invalid Coin."),
             Constants.Exists => BadRequest("Coin already exists."),
-            _ => new ContentResult() {Content = result, StatusCode = 201}
+            _ => new ContentResult() { Content = result, StatusCode = 201 }
         };
     }
 
@@ -55,7 +55,7 @@ public class CoinController : ControllerBase
             Constants.Invalid => BadRequest("Coin doesn't exist, creation failed. Invalid"),
             Constants.Exists => BadRequest("Name taken"),
             Constants.Success => Ok("Updated"),
-            _ => new ContentResult() {Content = result, StatusCode = 201}
+            _ => new ContentResult() { Content = result, StatusCode = 201 }
         };
     }
 

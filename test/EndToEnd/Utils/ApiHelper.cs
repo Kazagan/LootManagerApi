@@ -12,22 +12,22 @@ public class ApiHelper
 {
     private readonly RestClient _client;
     private readonly Uri _uri;
-    
+
     public ApiHelper(Uri uri)
     {
         _client = new RestClient();
         _uri = uri;
     }
-    
+
     // TODO figure how to use this to lessen code duplication without expected bad requests throwing erros.
     public async Task<RestResponse> Insert<TEntity>(TEntity entity) where TEntity : Entity
     {
         var request = new RestRequest(_uri)
             .AddJsonBody(entity);
 
-        return  await _client.PostAsync(request);
+        return await _client.PostAsync(request);
     }
-    
+
     public async Task<RestResponse> Update<TEntity>(TEntity entity) where TEntity : Entity
     {
         var request = new RestRequest(_uri)
@@ -44,7 +44,7 @@ public class ApiHelper
         var result = JsonConvert.DeserializeObject<TEntity>(response.Content);
         return result;
     }
-    
+
     public async Task Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity
     {
         foreach (var entity in entities)

@@ -1,11 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\Steff\AppData\Local\JetBrains\Rider2021.3\resharper-host\temp\Rider\vAny\CoverageData\_LootManagerApi.-837205557\Snapshot\snapshot.utdcvr</s:String>
+	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a3710a0e_002Dccb2_002D4c58_002D8763_002D732524c18c25/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b1f82679_002Db76e_002D4670_002Db11e_002D9b86c4e5a585/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" IsActive="True" Name="All tests from &amp;lt;test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b1f82679_002Db76e_002D4670_002Db11e_002D9b86c4e5a585/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" Name="All tests from &amp;lt;test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/home/spaige/workspace/programming/cshp/LootManager" Presentation="&amp;lt;test&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b797863b_002D5776_002D462e_002D9bbc_002Da45d3a2690c3/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" Name="ShouldReturnWithCoin" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
@@ -13,26 +13,26 @@
     &lt;TestId&gt;xUnit::22927F93-6B61-4245-88B8-7D3B57F6FCE4::net6.0::LootManagerTests.Services.CoinRollerServiceTests.ShouldReturnWithCoin&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c69f515f_002D5dfd_002D4bdb_002D9089_002D4b1967921cb9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Or&gt;&#xD;
-    &lt;Project Location="C:\Users\Steff\Documents\workspace\programming\cshp\LootManager\test\UnitTests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" /&gt;&#xD;
-    &lt;TestAncestor&gt;&#xD;
-      &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;&#xD;
-    &lt;/TestAncestor&gt;&#xD;
-  &lt;/Or&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c69f515f_002D5dfd_002D4bdb_002D9089_002D4b1967921cb9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;Project Location="C:\Users\Steff\Documents\workspace\programming\cshp\LootManager\test\UnitTests" Presentation="&amp;lt;test&amp;gt;\&amp;lt;UnitTests&amp;gt;" /&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d83376dd_002D50e0_002D473b_002D853f_002D7b858651f3d6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d83376dd_002D50e0_002D473b_002D853f_002D7b858651f3d6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e1ed0f25_002D1c7d_002D4ffa_002Dad53_002Dc55152ee1643/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e1ed0f25_002D1c7d_002D4ffa_002Dad53_002Dc55152ee1643/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb5ea0e3_002Dc911_002D4e26_002D8959_002Dc8cd8247d18c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CoinTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb5ea0e3_002Dc911_002D4e26_002D8959_002Dc8cd8247d18c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CoinTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -4,7 +4,7 @@ public class CoinRoller : Entity
 {
     public int TreasureLevel { get; set; }
     public int RollMin { get; set; }
-    public Coin Coin { get; set; } = new ();
+    public Coin Coin { get; set; } = new();
     public int DiceCount { get; set; }
     public int DiceSides { get; set; }
     public int Multiplier { get; set; }

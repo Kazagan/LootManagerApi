@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Data.Entities;
 using Data.Repositories;
 
@@ -43,6 +42,7 @@ public class CoinService
         {
             return Constants.Exists;
         }
+
         _repository.Insert(coin);
         _repository.Save();
         return coin.Id.ToString();
