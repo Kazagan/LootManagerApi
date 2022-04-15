@@ -11,7 +11,7 @@ public class GoodRoller : Entity
     public int DiceSides { get; set; }
     public int Multiplier { get; set; }
     public Good Good { get; set; }
-    public override bool IsInvalid()
+    public bool IsInvalid()
     {
         throw new NotImplementedException();
     }

@@ -4,3 +4,4 @@ obj
 .idea
 infra
 .user
+output.log

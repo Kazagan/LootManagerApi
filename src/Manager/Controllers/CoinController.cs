@@ -38,22 +38,24 @@ public class CoinController : ControllerBase
     public IActionResult Create([FromBody] Coin input)
     {
         var result = _service.Create(input);
-        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(input) : BadRequest(result);
+        return result switch
+        {
+            Constants.Invalid => BadRequest("Invalid Coin."),
+            Constants.Exists => BadRequest("Coin already exists."),
+            _ => new ContentResult() { Content = result, StatusCode = 201 }
+        };
     }
 
     [HttpPut]
     public IActionResult Update([FromBody] Coin input)
     {
-        if (input.Id == Guid.Empty)
-        {
-            return BadRequest("Must supply Id");
-        }
         var result = _service.Update(input);
         return result switch
         {
-            Constants.Success => Ok(input),
-            Constants.NotFound => NotFound(),
-            _ => BadRequest(result)
+            Constants.Invalid => BadRequest("Coin doesn't exist, creation failed. Invalid"),
+            Constants.Exists => BadRequest("Name taken"),
+            Constants.Success => Ok("Updated"),
+            _ => new ContentResult() { Content = result, StatusCode = 201 }
         };
     }
 

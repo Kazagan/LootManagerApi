@@ -10,4 +10,9 @@ public static class Constants
     public const string Exists = "Object already Exists";
     public const string Invalid = "Invalid";
 
+    public static IEnumerable<string> BadResults = new List<string>
+    {
+        NotFound, Exists, Invalid
+    };
+
 }

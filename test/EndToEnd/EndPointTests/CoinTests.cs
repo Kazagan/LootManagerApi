@@ -1,0 +1,309 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using AutoFixture;
+using Data.Entities;
+using EndToEnd.Utils;
+using FluentAssertions;
+using Newtonsoft.Json;
+using RestSharp;
+using Xunit;
+
+namespace EndToEnd.EndPointTests;
+
+public class CoinTests : IDisposable
+{
+    private readonly RestClient _client;
+    private readonly Fixture _fixture;
+    private readonly Uri _uri;
+    private readonly ApiHelper _apiHelper;
+    private const int RunTimes = 10;
+
+    public CoinTests()
+    {
+        _uri = new Uri("http://localHost:5555/coin", UriKind.Absolute);
+        _client = new RestClient();
+        _fixture = new Fixture();
+        _apiHelper = new ApiHelper(_uri);
+    }
+
+    [Fact]
+    public async Task ShouldCreateNewCoinAndReturnGuid()
+    {
+        var coin = _fixture.Create<Coin>();
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePostAsync(request);
+        response.IsSuccessful.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        Guid.TryParse(response.Content, out var x).Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("", 1)]
+    [InlineData("Gold", 0)]
+    public async Task ShouldReturnBadWhenInvalidPassed(string name, decimal inGold)
+    {
+        var coin = new Coin { Name = name, InGold = inGold };
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePostAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task ShouldReturnBadRequestWhenNameTaken()
+    {
+        var coin = _fixture.Create<Coin>();
+        await _apiHelper.Insert(coin);
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePostAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    //PUt
+    [Fact]
+    public async Task WhenNotExistsShouldFailCreateWhenInvalid()
+    {
+        foreach (var coin in _fixture.CreateMany<Coin>(RunTimes))
+        {
+            coin.Name = "";
+
+            var request = new RestRequest(_uri)
+                .AddJsonBody(coin);
+
+            var response = await _client.ExecutePutAsync(request);
+            response.IsSuccessful.Should().BeFalse();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+    }
+
+    [Fact]
+    public async Task WhenNotExistsShouldFailCreateWhenInvalidZero()
+    {
+        foreach (var coin in _fixture.CreateMany<Coin>(RunTimes))
+        {
+            coin.InGold = 0;
+
+            var request = new RestRequest(_uri)
+                .AddJsonBody(coin);
+
+            var response = await _client.ExecutePutAsync(request);
+            response.IsSuccessful.Should().BeFalse();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+    }
+
+    [Fact]
+    public async Task WhenNameTakenAndExistsShouldBadRequest()
+    {
+        var coins = _fixture.CreateMany<Coin>().ToList();
+        await _apiHelper.Insert(coins);
+
+        var coin = new Coin { Id = coins.First().Id, Name = coins.Last().Name, InGold = 10M };
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePutAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.Content.Should().Contain("Name");
+    }
+
+    [Fact]
+    public async Task WhenNameTakenAndNotExistsShouldBadRequest()
+    {
+        var original = _fixture.Create<Coin>();
+        await _apiHelper.Insert(original);
+
+        var coin = new Coin { Id = _fixture.Create<Guid>(), Name = original.Name, InGold = 10M };
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePutAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.Content.Should().Contain("Name");
+    }
+
+    [Fact]
+    public async Task ShouldBeAbleToUpdateInGold()
+    {
+        var original = _fixture.Create<Coin>();
+        await _apiHelper.Insert(original);
+
+        foreach (var inGold in _fixture.CreateMany<decimal>(RunTimes))
+        {
+            var coin = new Coin { Id = original.Id, InGold = inGold };
+            var response = await _apiHelper.Update(coin);
+            response.IsSuccessful.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task ShouldBeAbleToUpdateName()
+    {
+        var original = _fixture.Create<Coin>();
+        await _apiHelper.Insert(original);
+
+        foreach (var name in _fixture.CreateMany<string>(RunTimes))
+        {
+            var coin = new Coin { Id = original.Id, Name = name };
+            var response = await _apiHelper.Update(coin);
+            response.IsSuccessful.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task ShouldNotUpdateDefaultValueName()
+    {
+        var original = _fixture.Create<Coin>();
+        await _apiHelper.Insert(original);
+
+        var coin = new Coin { Id = original.Id, Name = "", InGold = 10M };
+        await _apiHelper.Update(coin);
+
+        var result = await _apiHelper.GetById<Coin>(original.Id);
+        result.Id.Should().Be(original.Id);
+        result.Name.Should().BeEquivalentTo(original.Name);
+        result.InGold.Should().NotBe(original.InGold);
+        result.InGold.Should().Be(coin.InGold);
+    }
+
+    [Fact]
+    public async Task ShouldNotUpdateDefaultValueInGold()
+    {
+        var original = _fixture.Create<Coin>();
+        await _apiHelper.Insert(original);
+
+        var coin = new Coin { Id = original.Id, Name = "Gold", InGold = 0 };
+        await _apiHelper.Update(coin);
+
+        var result = await _apiHelper.GetById<Coin>(original.Id);
+        result.Id.Should().Be(original.Id);
+        result.InGold.Should().Be(original.InGold);
+        result.Name.Should().NotBeEquivalentTo(original.Name);
+        result.Name.Should().BeEquivalentTo(coin.Name);
+    }
+
+    [Fact]
+    public async Task ShouldCreateWhenNotExists()
+    {
+        var coin = _fixture.Create<Coin>();
+
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
+
+        var response = await _client.ExecutePutAsync(request);
+        response.IsSuccessful.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        Guid.TryParse(response.Content, out var x).Should().BeTrue();
+    }
+
+    // Get
+    [Fact]
+    public async Task ShouldReturnCoinByName()
+    {
+        var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
+        await _apiHelper.Insert(coins);
+
+        foreach (var expected in coins)
+        {
+            var actual = await GetByName(expected);
+            actual.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    [Fact]
+    public async Task ShouldGetNotFoundById()
+    {
+        var request = new RestRequest($"{_uri}/{Guid.Empty}");
+        var response = await _client.GetAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ShouldGetNotFoundByName()
+    {
+        var request = new RestRequest($"{_uri}?name=''");
+        var response = await _client.GetAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ShouldReturnCoinById()
+    {
+        var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
+        await _apiHelper.Insert(coins);
+
+        foreach (var expected in coins)
+        {
+            var actual = await _apiHelper.GetById<Coin>(expected.Id);
+            actual.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    [Fact]
+    public async Task ShouldReturnAll()
+    {
+        var coins = _fixture.CreateMany<Coin>(10).ToList();
+        await _apiHelper.Insert(coins);
+
+        var request = new RestRequest(_uri);
+        var response = await _client.GetAsync(request);
+        var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
+
+        coins.Select(expectation => actual.Should().ContainEquivalentOf(expectation));
+    }
+
+    //Delete 
+    [Fact]
+    public async Task ShouldDeleteWHenFound()
+    {
+        var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
+        await _apiHelper.Insert(coins);
+
+        foreach (var coin in coins)
+        {
+            var request = new RestRequest($"{_uri}?id={coin.Id}");
+            var response = await _client.DeleteAsync(request);
+            response.IsSuccessful.Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task ShouldGetNotFound()
+    {
+        var request = new RestRequest($"{_uri}?id={Guid.Empty}");
+        var response = await _client.DeleteAsync(request);
+        response.IsSuccessful.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    private async Task<Coin> GetByName(Coin expected)
+    {
+        var request = new RestRequest($"{_uri}?name={expected.Name}");
+        var response = await _client.GetAsync(request);
+        var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
+        return actual;
+    }
+
+    public void Dispose()
+    {
+        Task.Run(() => _apiHelper.Reset<Coin>());
+        _client.Dispose();
+    }
+}

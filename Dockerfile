@@ -4,7 +4,6 @@ WORKDIR /.
 COPY *.sln .
 COPY src/Manager/*.csproj Manager/
 COPY src/Data/*.csproj Data/
-COPY test/ManagerTests/*.csproj ManagerTests/
 
 COPY . .
 

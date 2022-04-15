@@ -4,15 +4,10 @@ namespace Data.Entities;
 
 public class Coin : Entity
 {
-    public Coin()
-    {
-        Name = "";
-    }
-
     public decimal InGold { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 
-    public override bool IsInvalid() =>
+    public virtual bool IsInvalid() =>
         InGold == 0 || string.IsNullOrEmpty(Name);
 
     public void Copy(Coin coin)
