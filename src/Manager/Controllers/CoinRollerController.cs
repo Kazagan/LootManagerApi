@@ -1,4 +1,3 @@
-using Data;
 using Data.Entities;
 using Data.Repositories;
 using Manager.Services;
@@ -17,9 +16,18 @@ public class CoinRollerController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult Get(int treasureLevel, int roll)
     {
-        var rollers = _service.GetAll();
+        if (roll != 0)
+        {
+            return Ok(_service.Get(treasureLevel, roll));
+        }
+
+        if (treasureLevel != 0)
+        {
+            return Ok(_service.Get(treasureLevel));
+        }
+        var rollers = _service.Get();
         return Ok(rollers);
     }
 
@@ -29,18 +37,6 @@ public class CoinRollerController : ControllerBase
     {
         var roller = _service.Get(id);
         return roller is null ? NotFound(roller) : Ok(roller);
-    }
-
-    [HttpGet]
-    public IActionResult Get(int treasureLevel, int roll)
-    {
-        if (roll == 0)
-        {
-            return Ok(_service.GetForLevel(treasureLevel));
-        }
-
-        var coinRoller = _service.Get(treasureLevel, roll);
-        return coinRoller is null ? NotFound(coinRoller) : Ok(coinRoller);
     }
 
     [HttpPost]

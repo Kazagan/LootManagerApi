@@ -7,7 +7,7 @@ public class Coin : Entity
     public decimal InGold { get; set; }
     public string Name { get; set; } = "";
 
-    public virtual bool IsInvalid() =>
+    public bool IsInvalid() =>
         InGold == 0 || string.IsNullOrEmpty(Name);
 
     public void Copy(Coin coin)

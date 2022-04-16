@@ -31,7 +31,7 @@ public class CoinRollerServiceTests
     {
         var rollers = _fixture.CreateMany<CoinRoller>(100).ToList();
         SetUpMock(rollers);
-        _sut.GetAll().Should().BeEquivalentTo(rollers);
+        _sut.Get().Should().BeEquivalentTo(rollers);
     }
 
     [Fact]
@@ -68,8 +68,7 @@ public class CoinRollerServiceTests
         var roller = _fixture.Create<CoinRoller>();
         CoinRoller? inserted = null;
         _repository.Setup(x => x.Insert(It.IsAny<CoinRoller>()))
-            .Callback<CoinRoller>(x => inserted = x)
-            .Verifiable();
+            .Callback<CoinRoller>(x => inserted = x);
         _repository.Setup(x => x.Get<Coin>(roller.Coin.Id))
             .Returns(roller.Coin);
         _repository.Setup(x => x.Save())

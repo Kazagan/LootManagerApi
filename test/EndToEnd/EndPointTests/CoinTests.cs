@@ -90,7 +90,7 @@ public class CoinTests : IDisposable
     }
 
     [Fact]
-    public async Task WhenNotExistsShouldFailCreateWhenInvalidZero()
+    public async Task WhenNotExistsShouldFailCreateWhenInvalidInGold()
     {
         foreach (var coin in _fixture.CreateMany<Coin>(RunTimes))
         {

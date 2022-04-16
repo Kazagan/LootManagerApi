@@ -3,7 +3,7 @@ up:
 	#make update-db
 
 down:
-	docker-compose down
+	docker-compose down -v
 
 reset:
 	make down

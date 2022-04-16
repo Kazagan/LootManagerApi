@@ -15,16 +15,16 @@ public class CoinRollerService
         _repository = repository;
         _coinService = new CoinService(_repository);
     }
-    public IEnumerable<CoinRoller> GetAll() => _repository.Get<CoinRoller>()
+    public IEnumerable<CoinRoller> Get() => _repository.Get<CoinRoller>()
         .Include(x => x.Coin);
-    public CoinRoller? Get(Guid id) => GetAll().FirstOrDefault(x => x.Id == id);
+    public CoinRoller? Get(Guid id) => Get().FirstOrDefault(x => x.Id == id);
 
-    public IEnumerable<CoinRoller> GetForLevel(int treasureLevel) =>
-        GetAll().Where(x => x.TreasureLevel == treasureLevel);
+    public IEnumerable<CoinRoller> Get(int treasureLevel) =>
+        Get().Where(x => x.TreasureLevel == treasureLevel);
 
     public CoinRoller? Get(int treasureLevel, int roll)
     {
-        return GetForLevel(treasureLevel)
+        return Get(treasureLevel)
             .OrderBy(x => x.RollMin)
             .LastOrDefault(x => x.RollMin < roll);
     }
@@ -105,5 +105,5 @@ public class CoinRollerService
 
     // Get for specific treasure level and roll, rather than the next, used for ensuring roll is not already set.
     private CoinRoller? GetRoll(int treasureLevel, int rollMin) =>
-        GetAll().FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.RollMin == rollMin);
+        Get().FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.RollMin == rollMin);
 }

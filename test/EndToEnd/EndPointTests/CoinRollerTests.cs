@@ -46,8 +46,6 @@ public class CoinRollerTests : IDisposable
         {
             actual.Should().ContainEquivalentOf(coinRoller);
         }
-
-        await Delete(actual);
     }
 
     private async Task Insert(CoinRoller roller)
@@ -60,20 +58,6 @@ public class CoinRollerTests : IDisposable
     {
         await _apiHelper.Insert(_coinUri, rollers.Select(x => x.Coin));
         await _apiHelper.Insert(_rollerUri, rollers);
-    }
-
-    private async Task Delete(CoinRoller roller)
-    {
-        await _apiHelper.Delete(_rollerUri, roller.Id);
-        await _apiHelper.Delete(_coinUri, roller.Coin.Id);
-    }
-
-    private async Task Delete(IEnumerable<CoinRoller> rollers)
-    {
-        foreach (var coinRoller in rollers)
-        {
-            await Delete(coinRoller);
-        }
     }
 
     public void Dispose()
