@@ -62,7 +62,9 @@ public class CoinRollerService
         {
             var coin = _coinService.Get(roller.Coin);
             if (coin is null)
+            {
                 return "New coin not found";
+            }
             original.Coin = coin;
         }
 
@@ -72,9 +74,9 @@ public class CoinRollerService
         return Constants.Success;
     }
 
-    public bool Delete(Guid Id)
+    public bool Delete(Guid id)
     {
-        var roller = Get(Id);
+        var roller = Get(id);
         if (roller is null)
         {
             return false;
