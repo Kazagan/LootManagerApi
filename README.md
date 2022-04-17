@@ -3,13 +3,4 @@
 This is an api that I'm developing to eventually plug into at least a discord both for roll treasure in dnd (specifically 
 3rd edition). Some of the design choices come from wanting it to be user friendly to use from discord bot commands.
 
-__TODO:__  
-    +   ~~Get running in Docker~~   
-    +   ~~Coin end point~~   
-    +   ~~Coin Roller end point~~   
-    -   Acceptance tests  
-    +   Goods
-
-Current issues:  
-    - My Laptop only: When running in docker, containers are unable to communicate. Issue does not exist on on my desktop. Unsure of cause,
-    Settings seem to be configured correctly.
+Getting End to End tests up and running has been more difficult than anticipated. A large part in due to wanting to ensure that the tests clean up after themselves. Attempting to do the cleanup at the end of the tests was causing issues so tests are currently cleaning up after themselves. I also took the time to make the end points utilize async/await, something I originally wasn't going to do until later. 
