@@ -36,5 +36,7 @@
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinRollerTests.ShouldGetAll&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinRollerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::22927F93-6B61-4245-88B8-7D3B57F6FCE4::net6.0::LootManagerTests.Services.CoinRollerServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::22927F93-6B61-4245-88B8-7D3B57F6FCE4::net6.0::LootManagerTests.Services.CoinServiceTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

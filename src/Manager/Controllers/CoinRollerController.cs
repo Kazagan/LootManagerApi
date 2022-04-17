@@ -16,22 +16,6 @@ public class CoinRollerController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get(int treasureLevel, int roll)
-    {
-        if (roll != 0)
-        {
-            return Ok(_service.Get(treasureLevel, roll));
-        }
-
-        if (treasureLevel != 0)
-        {
-            return Ok(_service.Get(treasureLevel));
-        }
-        var rollers = _service.Get();
-        return Ok(rollers);
-    }
-
-    [HttpGet]
     [Route("{id}")]
     public IActionResult Get(Guid id)
     {
@@ -39,32 +23,58 @@ public class CoinRollerController : ControllerBase
         return roller is null ? NotFound(roller) : Ok(roller);
     }
 
-    [HttpPost]
-    public IActionResult Post([FromBody] CoinRoller coinRoller)
+    [HttpGet]
+    public IActionResult Get(int treasureLevel, int roll)
     {
-        var result = _service.Create(coinRoller);
-        return result.Equals(Constants.Success, StringComparison.Ordinal) ? Ok(coinRoller) : BadRequest(result);
+        if (roll != 0)
+        {
+            var result = _service.Get(treasureLevel, roll);
+            return result is null ? NotFound() : Ok(result);
+        }
+        else if (treasureLevel != 0)
+        {
+            var results = _service.Get(treasureLevel);
+            return !results.Any() ? NotFound() : Ok(results);
+        }
+        else
+        {
+            var results = _service.Get();
+            return !results.Any() ? NotFound() : Ok(results);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] CoinRoller coinRoller)
+    {
+        var result = await _service.Create(coinRoller);
+        return result switch
+        {
+            Constants.Exists => BadRequest(Constants.Exists),
+            Constants.Invalid => BadRequest(Constants.Invalid),
+            _ => new ContentResult { Content = result, StatusCode = 201 }
+        };
     }
 
     [HttpPut]
-    public IActionResult Put([FromBody] CoinRoller coinRoller)
+    public async Task<IActionResult> Put([FromBody] CoinRoller coinRoller)
     {
         if (coinRoller.Id == Guid.Empty)
         {
-            return BadRequest("Must supply Id");
+            return await Post(coinRoller);
         }
-        var result = _service.Update(coinRoller);
+        var result = await _service.Update(coinRoller);
         return result switch
         {
-            Constants.Success => Ok(coinRoller),
             Constants.NotFound => NotFound(),
-            _ => BadRequest(result)
+            Constants.Invalid => BadRequest(Constants.Invalid),
+            Constants.Success => Ok("Updated"),
+            _ => BadRequest()
         };
     }
 
     [HttpDelete]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Deleted") : NotFound();
+        return await _service.Delete(id) ? Ok("Deleted") : NotFound();
     }
 }

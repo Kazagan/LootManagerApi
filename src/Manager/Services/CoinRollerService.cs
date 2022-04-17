@@ -1,4 +1,3 @@
-using Data;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -29,23 +28,29 @@ public class CoinRollerService
             .LastOrDefault(x => x.RollMin < roll);
     }
 
-    public string Create(CoinRoller coinRoller)
+    public async Task<string> Create(CoinRoller coinRoller)
     {
         if (Exists(coinRoller))
+        {
             return Constants.Exists;
+        }
         var coin = _coinService.Get(coinRoller.Coin);
         if (coin is null)
+        {
             return "Must provide existing coin.";
-        if (coinRoller.IsInvalid())
-            return Constants.Invalid;
-
+        }
         coinRoller.Coin = coin;
-        _repository.Insert(coinRoller);
-        _repository.Save();
-        return Constants.Success;
+        if (coinRoller.IsInvalid())
+        {
+            return Constants.Invalid;
+        }
+
+        await _repository.Insert(coinRoller);
+        await _repository.Save();
+        return coinRoller.Id.ToString();
     }
 
-    public string Update(CoinRoller roller)
+    public async Task<string> Update(CoinRoller roller)
     {
         var original = Get(roller.Id);
         if (original is null)
@@ -63,26 +68,26 @@ public class CoinRollerService
             var coin = _coinService.Get(roller.Coin);
             if (coin is null)
             {
-                return "New coin not found";
+                return Constants.Invalid;
             }
             original.Coin = coin;
         }
 
         original.Copy(roller);
-        _repository.Update(original);
-        _repository.Save();
+        await _repository.Update(original);
+        await _repository.Save();
         return Constants.Success;
     }
 
-    public bool Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
         var roller = Get(id);
         if (roller is null)
         {
             return false;
         }
-        _repository.Delete(roller);
-        _repository.Save();
+        await _repository.Delete(roller);
+        await _repository.Save();
         return true;
     }
 
@@ -102,9 +107,7 @@ public class CoinRollerService
     {
         return GetRoll(roller.TreasureLevel, roller.RollMin) is not null;
     }
-
-
-
+    
     // Get for specific treasure level and roll, rather than the next, used for ensuring roll is not already set.
     private CoinRoller? GetRoll(int treasureLevel, int rollMin) =>
         Get().FirstOrDefault(x => x.TreasureLevel == treasureLevel && x.RollMin == rollMin);

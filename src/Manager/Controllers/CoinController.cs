@@ -35,9 +35,9 @@ public class CoinController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Coin input)
+    public async Task<IActionResult> Create([FromBody] Coin input)
     {
-        var result = _service.Create(input);
+        var result = await _service.Create(input);
         return result switch
         {
             Constants.Invalid => BadRequest("Invalid Coin."),
@@ -47,9 +47,9 @@ public class CoinController : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult Update([FromBody] Coin input)
+    public async Task<IActionResult> Update([FromBody] Coin input)
     {
-        var result = _service.Update(input);
+        var result = await _service.Update(input);
         return result switch
         {
             Constants.Invalid => BadRequest("Coin doesn't exist, creation failed. Invalid"),
@@ -60,8 +60,8 @@ public class CoinController : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        return _service.Delete(id) ? Ok("Deleted") : NotFound();
+        return await _service.Delete(id) ? Ok("Deleted") : NotFound();
     }
 }
