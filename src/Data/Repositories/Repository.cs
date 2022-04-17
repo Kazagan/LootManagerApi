@@ -7,11 +7,11 @@ public interface IRepository
 {
     IQueryable<TEntity> Get<TEntity>() where TEntity : Entity;
     TEntity? Get<TEntity>(Guid id) where TEntity : Entity;
-    void Insert<TEntity>(TEntity entity) where TEntity : Entity;
-    void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity;
-    void Delete<TEntity>(TEntity entity) where TEntity : Entity;
-    void Update<TEntity>(TEntity entity) where TEntity : Entity;
-    void Save();
+    Task Insert<TEntity>(TEntity entity) where TEntity : Entity;
+    Task Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity;
+    Task Delete<TEntity>(TEntity entity) where TEntity : Entity;
+    Task Update<TEntity>(TEntity entity) where TEntity : Entity;
+    Task Save();
 }
 public class Repository<TContext> : IRepository where TContext : DbContext
 {
@@ -29,28 +29,28 @@ public class Repository<TContext> : IRepository where TContext : DbContext
         return Context.Set<TEntity>().FirstOrDefault(x => x.Id == id);
     }
 
-    public void Insert<TEntity>(TEntity entity) where TEntity : Entity
+    public async Task Insert<TEntity>(TEntity entity) where TEntity : Entity
     {
-        Context.Set<TEntity>().Add(entity);
+        await Task.Run(() => Context.Add(entity));
     }
 
-    public void Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity
+    public async Task Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : Entity
     {
-        Context.Set<TEntity>().AddRange(entities);
+        await Task.Run(() => Context.Set<TEntity>().AddRange(entities));
     }
 
-    public void Update<TEntity>(TEntity entity) where TEntity : Entity
+    public async Task Update<TEntity>(TEntity entity) where TEntity : Entity
     {
-        Context.Update(entity);
+        await Task.Run(() => Context.Update(entity));
     }
 
-    public void Delete<TEntity>(TEntity entity) where TEntity : Entity
+    public async Task Delete<TEntity>(TEntity entity) where TEntity : Entity
     {
-        Context.Set<TEntity>().Remove(entity);
+        await Task.Run(() => Context.Set<TEntity>().Remove(entity));
     }
 
-    public void Save()
+    public async Task Save()
     {
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 }
