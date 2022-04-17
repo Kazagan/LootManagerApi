@@ -32,7 +32,7 @@ public class CoinService
         return string.IsNullOrEmpty(coin.Name) ? null : Get(coin.Name);
     }
 
-    public string Create(Coin coin)
+    public async Task<string> Create(Coin coin)
     {
         if (coin.IsInvalid())
         {
@@ -43,17 +43,17 @@ public class CoinService
             return Constants.Exists;
         }
 
-        _repository.Insert(coin);
-        _repository.Save();
+        await _repository.Insert(coin);
+        await _repository.Save();
         return coin.Id.ToString();
     }
 
-    public string Update(Coin coin)
+    public async Task<string> Update(Coin coin)
     {
         var original = Get(coin);
         if (original is null)
         {
-            return Create(coin);
+            return await Create(coin);
         }
         if (coin.Name != original.Name && NameIsTaken(coin.Name))
         {
@@ -61,20 +61,20 @@ public class CoinService
         }
 
         original.Copy(coin);
-        _repository.Update(original);
-        _repository.Save();
+        await _repository.Update(original);
+        await _repository.Save();
         return Constants.Success;
     }
 
-    public bool Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
         var coin = Get(id);
         if (coin is null)
         {
             return false;
         }
-        _repository.Delete(coin);
-        _repository.Save();
+        await _repository.Delete(coin);
+        await _repository.Save();
         return true;
     }
 

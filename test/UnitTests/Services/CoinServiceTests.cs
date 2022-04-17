@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using Data.Entities;
 using Data.Repositories;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Manager;
 using Manager.Services;
 using Moq;
@@ -75,14 +77,21 @@ public class CoinServiceTests
 
     //Reads
     [Fact]
-    public void ShouldCallSave()
+    public async Task ShouldCallSave()
     {
-        _sut.Create(_fixture.Create<Coin>());
+        await _sut.Create(_fixture.Create<Coin>());
         _repository.Verify(x => x.Save(), Times.Once);
     }
 
     [Fact]
-    public void ShouldSaveWithExpectedNameAndValue()
+    public async Task ShouldReturnId()
+    {
+        var result = await _sut.Create(_fixture.Create<Coin>());
+        Guid.TryParse(result, out var id).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ShouldSaveWithExpectedNameAndValue()
     {
         var expected = _fixture.Create<Coin>();
 
@@ -90,14 +99,14 @@ public class CoinServiceTests
         _repository
             .Setup(x => x.Insert(It.IsAny<Coin>()))
             .Callback<Coin>(x => actual = x);
-        _sut.Create(expected);
+        await _sut.Create(expected);
 
         actual?.Name.Should().Be(expected.Name);
         actual?.InGold.Should().Be(expected.InGold);
     }
 
     [Fact]
-    public void ShouldNotSaveWhenNameTaken()
+    public async Task ShouldNotSaveWhenNameTaken()
     {
         var expected = _fixture.CreateMany<Coin>(1).ToList();
         SetupRepoMock(expected);
@@ -106,7 +115,7 @@ public class CoinServiceTests
         _repository
             .Setup(x => x.Insert(It.IsAny<Coin>()))
             .Callback<Coin>(x => actual = x);
-        _sut.Create(expected.First());
+        await _sut.Create(expected.First());
 
         actual.Should().BeNull();
     }
@@ -114,16 +123,16 @@ public class CoinServiceTests
     [Theory]
     [InlineData("Gold", 0)]
     [InlineData("", 10)]
-    public void ShouldNotSaveInvalidCoin(string name, int inGold)
+    public async Task ShouldNotSaveInvalidCoin(string name, int inGold)
     {
         var coin = new Coin { Id = _fixture.Create<Guid>(), Name = name, InGold = inGold };
-        _sut.Create(coin);
+        await _sut.Create(coin);
         _repository.Verify(x => x.Save(), Times.Never);
     }
 
     // Update
     [Fact]
-    public void ShouldCallUpdateWithExpectedNewValues()
+    public async Task ShouldCallUpdateWithExpectedNewValues()
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
@@ -134,39 +143,48 @@ public class CoinServiceTests
 
         var newCoin = _fixture.Create<Coin>();
         newCoin.Id = coin.Id;
-        _sut.Update(newCoin);
+        await _sut.Update(newCoin);
         callBack.Should().BeEquivalentTo(newCoin);
     }
 
     [Fact]
-    public void ShouldUpdateIfIdAndInGoldPassed()
+    public async Task ShouldUpdateIfIdAndInGoldPassed()
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
 
         var newCoin = new Coin { Id = coin.Id, InGold = 10 };
-        var result = _sut.Update(newCoin);
+        var result = await _sut.Update(newCoin);
         result.Should().Be(Constants.Success);
+    }
+
+    [Fact]
+    public async Task ShouldCreateNewWhenUpdateCalledAndDoesntExist()
+    {
+        var coin = _fixture.Create<Coin>();
+        var result = await _sut.Update(coin);
+
+        Guid.TryParse(result, out var id).Should().BeTrue();
     }
 
     // Delete
     [Fact]
-    public void ShouldCallDeleteForExpectedCoinWhenIdFound()
+    public async Task ShouldCallDeleteForExpectedCoinWhenIdFound()
     {
         var coin = _fixture.Create<Coin>();
         SetupRepoMock(coin);
 
-        _sut.Delete(coin.Id);
+        await _sut.Delete(coin.Id);
         _repository
             .Verify(x => x.Delete(It.IsAny<Coin>()), Times.Once);
     }
 
     [Fact]
-    public void ShouldNotCallDeleteWhenNotFound()
+    public async Task ShouldNotCallDeleteWhenNotFound()
     {
         var coins = _fixture.Create<Coin>();
         SetupRepoMock(coins);
-        _sut.Delete(new Guid());
+        await _sut.Delete(new Guid());
         _repository
             .Verify(x => x.Delete(It.IsAny<Coin>()), Times.Never);
     }
