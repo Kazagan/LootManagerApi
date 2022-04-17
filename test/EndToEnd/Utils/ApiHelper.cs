@@ -51,15 +51,6 @@ public class ApiHelper
         }
     }
 
-    public async Task Reset<TEntity>(Uri uri) where TEntity : Entity
-    {
-        var ids = await GetAll<TEntity>(uri);
-        foreach (var id in ids)
-        {
-            await Delete(uri, id);
-        }
-    }
-
     public async Task Delete(Uri uri, Guid id)
     {
         var request = new RestRequest($"{uri}?id={id}");

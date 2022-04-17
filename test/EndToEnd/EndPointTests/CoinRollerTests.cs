@@ -12,14 +12,14 @@ using Xunit;
 
 namespace EndToEnd.EndPointTests;
 
-public class CoinRollerTests : IDisposable
+public class CoinRollerTests
 {
     private readonly RestClient _client;
     private readonly Fixture _fixture;
     private readonly Uri _rollerUri;
     private readonly Uri _coinUri;
     private readonly ApiHelper _apiHelper;
-    private const int RunCount = 10;
+    private const int RunCount = 1;
     
     public CoinRollerTests()
     {
@@ -35,7 +35,7 @@ public class CoinRollerTests : IDisposable
     [Fact]
     public async Task ShouldGetAll()
     {
-        var coinRollers = _fixture.CreateMany<CoinRoller>(RunCount).ToList();
+        var coinRollers = _fixture.CreateMany<CoinRoller>(10).ToList();
         await Insert(coinRollers);
 
         var request = new RestRequest(_rollerUri);
@@ -45,6 +45,8 @@ public class CoinRollerTests : IDisposable
         foreach (var coinRoller in coinRollers)
         {
             actual.Should().ContainEquivalentOf(coinRoller);
+            await _apiHelper.Delete(_rollerUri, coinRoller.Coin.Id);
+            await _apiHelper.Delete(_coinUri, coinRoller.Id);
         }
     }
 
@@ -58,12 +60,5 @@ public class CoinRollerTests : IDisposable
     {
         await _apiHelper.Insert(_coinUri, rollers.Select(x => x.Coin));
         await _apiHelper.Insert(_rollerUri, rollers);
-    }
-
-    public void Dispose()
-    {
-        Task.Run(() => _apiHelper.Reset<CoinRoller>(_rollerUri));
-        Task.Run(() => _apiHelper.Reset<Coin>(_coinUri));
-        _client.Dispose();
     }
 }
