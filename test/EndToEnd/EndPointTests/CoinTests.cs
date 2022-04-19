@@ -19,7 +19,7 @@ public class CoinTests
     private readonly Fixture _fixture;
     private readonly Uri _uri;
     private readonly ApiHelper _apiHelper;
-    private const int RunTimes = 10;
+    private const int RunTimes = 100;
 
     public CoinTests()
     {

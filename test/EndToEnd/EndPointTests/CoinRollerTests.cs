@@ -23,7 +23,7 @@ public class CoinRollerTests
     private readonly Uri _rollerUri;
     private readonly Uri _coinUri;
     private readonly ApiHelper _apiHelper;
-    private const int RunCount = 10;
+    private const int RunCount = 100;
     
     public CoinRollerTests()
     {
@@ -122,7 +122,7 @@ public class CoinRollerTests
     public async Task ShouldReturnNotFoundWhenSearchedTreasure()
     {
         var request = new RestRequest(_rollerUri)
-            .AddParameter("treasureLevel", _fixture.Create<int>());
+            .AddParameter("treasureLevel", -1); // -1 remove chance for match
 
         var response = await _client.GetAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
