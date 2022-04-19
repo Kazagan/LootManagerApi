@@ -13,7 +13,7 @@ using Xunit;
 
 namespace EndToEnd.EndPointTests;
 
-public class CoinTests : IDisposable
+public class CoinTests
 {
     private readonly RestClient _client;
     private readonly Fixture _fixture;
@@ -26,7 +26,7 @@ public class CoinTests : IDisposable
         _uri = new Uri("http://localHost:5555/coin", UriKind.Absolute);
         _client = new RestClient();
         _fixture = new Fixture();
-        _apiHelper = new ApiHelper(_uri);
+        _apiHelper = new ApiHelper();
     }
 
     [Fact]
@@ -41,11 +41,12 @@ public class CoinTests : IDisposable
         response.IsSuccessful.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         Guid.TryParse(response.Content, out var x).Should().BeTrue();
+        await _apiHelper.Delete(_uri, coin.Id);
     }
 
     [Theory]
     [InlineData("", 1)]
-    [InlineData("Gold", 0)]
+    [InlineData("Silver", 0)]
     public async Task ShouldReturnBadWhenInvalidPassed(string name, decimal inGold)
     {
         var coin = new Coin { Name = name, InGold = inGold };
@@ -62,7 +63,7 @@ public class CoinTests : IDisposable
     public async Task ShouldReturnBadRequestWhenNameTaken()
     {
         var coin = _fixture.Create<Coin>();
-        await _apiHelper.Insert(coin);
+        await _apiHelper.Insert(_uri, coin);
 
         var request = new RestRequest(_uri)
             .AddJsonBody(coin);
@@ -70,6 +71,7 @@ public class CoinTests : IDisposable
         var response = await _client.ExecutePostAsync(request);
         response.IsSuccessful.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        await _apiHelper.Delete(_uri, coin.Id);
     }
 
     //PUt
@@ -90,7 +92,7 @@ public class CoinTests : IDisposable
     }
 
     [Fact]
-    public async Task WhenNotExistsShouldFailCreateWhenInvalidZero()
+    public async Task WhenNotExistsShouldFailCreateWhenInvalidInGold()
     {
         foreach (var coin in _fixture.CreateMany<Coin>(RunTimes))
         {
@@ -109,7 +111,7 @@ public class CoinTests : IDisposable
     public async Task WhenNameTakenAndExistsShouldBadRequest()
     {
         var coins = _fixture.CreateMany<Coin>().ToList();
-        await _apiHelper.Insert(coins);
+        await _apiHelper.Insert(_uri, coins);
 
         var coin = new Coin { Id = coins.First().Id, Name = coins.Last().Name, InGold = 10M };
         var request = new RestRequest(_uri)
@@ -119,13 +121,14 @@ public class CoinTests : IDisposable
         response.IsSuccessful.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         response.Content.Should().Contain("Name");
+        await _apiHelper.Delete(_uri, coin.Id);
     }
 
     [Fact]
     public async Task WhenNameTakenAndNotExistsShouldBadRequest()
     {
         var original = _fixture.Create<Coin>();
-        await _apiHelper.Insert(original);
+        await _apiHelper.Insert(_uri, original);
 
         var coin = new Coin { Id = _fixture.Create<Guid>(), Name = original.Name, InGold = 10M };
         var request = new RestRequest(_uri)
@@ -135,66 +138,79 @@ public class CoinTests : IDisposable
         response.IsSuccessful.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         response.Content.Should().Contain("Name");
+        await _apiHelper.Delete(_uri, original.Id);
     }
 
     [Fact]
     public async Task ShouldBeAbleToUpdateInGold()
     {
         var original = _fixture.Create<Coin>();
-        await _apiHelper.Insert(original);
+        await _apiHelper.Insert(_uri, original);
 
         foreach (var inGold in _fixture.CreateMany<decimal>(RunTimes))
         {
             var coin = new Coin { Id = original.Id, InGold = inGold };
-            var response = await _apiHelper.Update(coin);
+            var response = await _apiHelper.Update(_uri, coin);
             response.IsSuccessful.Should().BeTrue();
         }
+        await _apiHelper.Delete(_uri, original.Id);
     }
 
     [Fact]
     public async Task ShouldBeAbleToUpdateName()
     {
         var original = _fixture.Create<Coin>();
-        await _apiHelper.Insert(original);
+        await _apiHelper.Insert(_uri, original);
 
         foreach (var name in _fixture.CreateMany<string>(RunTimes))
         {
             var coin = new Coin { Id = original.Id, Name = name };
-            var response = await _apiHelper.Update(coin);
+            var response = await _apiHelper.Update(_uri, coin);
             response.IsSuccessful.Should().BeTrue();
         }
+        await _apiHelper.Delete(_uri, original.Id);
     }
 
     [Fact]
     public async Task ShouldNotUpdateDefaultValueName()
     {
         var original = _fixture.Create<Coin>();
-        await _apiHelper.Insert(original);
+        await _apiHelper.Insert(_uri, original);
 
         var coin = new Coin { Id = original.Id, Name = "", InGold = 10M };
-        await _apiHelper.Update(coin);
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
 
-        var result = await _apiHelper.GetById<Coin>(original.Id);
+        var response = await _client.PutAsync(request);
+        response.IsSuccessful.Should().BeTrue();
+
+        var result = await _apiHelper.GetById<Coin>(_uri, original.Id);
         result.Id.Should().Be(original.Id);
         result.Name.Should().BeEquivalentTo(original.Name);
         result.InGold.Should().NotBe(original.InGold);
         result.InGold.Should().Be(coin.InGold);
+        await _apiHelper.Delete(_uri, original.Id);
     }
 
     [Fact]
     public async Task ShouldNotUpdateDefaultValueInGold()
     {
         var original = _fixture.Create<Coin>();
-        await _apiHelper.Insert(original);
+        await _apiHelper.Insert(_uri, original);
 
-        var coin = new Coin { Id = original.Id, Name = "Gold", InGold = 0 };
-        await _apiHelper.Update(coin);
+        var coin = new Coin { Id = original.Id, Name = _fixture.Create<string>(), InGold = 0 };
+        var request = new RestRequest(_uri)
+            .AddJsonBody(coin);
 
-        var result = await _apiHelper.GetById<Coin>(original.Id);
+        var response = await _client.ExecutePutAsync(request);
+        response.IsSuccessful.Should().BeTrue();
+
+        var result = await _apiHelper.GetById<Coin>(_uri, original.Id);
         result.Id.Should().Be(original.Id);
         result.InGold.Should().Be(original.InGold);
         result.Name.Should().NotBeEquivalentTo(original.Name);
         result.Name.Should().BeEquivalentTo(coin.Name);
+        await _apiHelper.Delete(_uri, original.Id);
     }
 
     [Fact]
@@ -209,6 +225,7 @@ public class CoinTests : IDisposable
         response.IsSuccessful.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         Guid.TryParse(response.Content, out var x).Should().BeTrue();
+        await _apiHelper.Delete(_uri, coin.Id);
     }
 
     // Get
@@ -216,12 +233,13 @@ public class CoinTests : IDisposable
     public async Task ShouldReturnCoinByName()
     {
         var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
-        await _apiHelper.Insert(coins);
+        await _apiHelper.Insert(_uri, coins);
 
         foreach (var expected in coins)
         {
             var actual = await GetByName(expected);
             actual.Should().BeEquivalentTo(expected);
+            await _apiHelper.Delete(_uri, expected.Id);
         }
     }
 
@@ -247,12 +265,13 @@ public class CoinTests : IDisposable
     public async Task ShouldReturnCoinById()
     {
         var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
-        await _apiHelper.Insert(coins);
+        await _apiHelper.Insert(_uri, coins);
 
         foreach (var expected in coins)
         {
-            var actual = await _apiHelper.GetById<Coin>(expected.Id);
+            var actual = await _apiHelper.GetById<Coin>(_uri, expected.Id);
             actual.Should().BeEquivalentTo(expected);
+            await _apiHelper.Delete(_uri, expected.Id);
         }
     }
 
@@ -260,13 +279,17 @@ public class CoinTests : IDisposable
     public async Task ShouldReturnAll()
     {
         var coins = _fixture.CreateMany<Coin>(10).ToList();
-        await _apiHelper.Insert(coins);
+        await _apiHelper.Insert(_uri, coins);
 
         var request = new RestRequest(_uri);
         var response = await _client.GetAsync(request);
-        var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content);
+        var actual = JsonConvert.DeserializeObject<IEnumerable<Coin>>(response.Content).ToList();
 
-        coins.Select(expectation => actual.Should().ContainEquivalentOf(expectation));
+        foreach (var coin in coins)
+        {
+            actual.Should().ContainEquivalentOf(coin);
+            await _apiHelper.Delete(_uri, coin.Id);
+        }
     }
 
     //Delete 
@@ -274,7 +297,7 @@ public class CoinTests : IDisposable
     public async Task ShouldDeleteWHenFound()
     {
         var coins = _fixture.CreateMany<Coin>(RunTimes).ToList();
-        await _apiHelper.Insert(coins);
+        await _apiHelper.Insert(_uri, coins);
 
         foreach (var coin in coins)
         {
@@ -299,11 +322,5 @@ public class CoinTests : IDisposable
         var response = await _client.GetAsync(request);
         var actual = JsonConvert.DeserializeObject<Coin>(response.Content);
         return actual;
-    }
-
-    public void Dispose()
-    {
-        Task.Run(() => _apiHelper.Reset<Coin>());
-        _client.Dispose();
     }
 }

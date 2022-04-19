@@ -9,6 +9,7 @@ public static class Constants
     public const string NotFound = "Not Found";
     public const string Exists = "Object already Exists";
     public const string Invalid = "Invalid";
+    public const string InvalidChild = "Invalid Child";
 
     public static IEnumerable<string> BadResults = new List<string>
     {

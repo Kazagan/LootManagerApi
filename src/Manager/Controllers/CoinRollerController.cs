@@ -51,6 +51,7 @@ public class CoinRollerController : ControllerBase
         {
             Constants.Exists => BadRequest(Constants.Exists),
             Constants.Invalid => BadRequest(Constants.Invalid),
+            Constants.InvalidChild => BadRequest("Invalid Coin"),
             _ => new ContentResult { Content = result, StatusCode = 201 }
         };
     }
@@ -66,7 +67,8 @@ public class CoinRollerController : ControllerBase
         return result switch
         {
             Constants.NotFound => NotFound(),
-            Constants.Invalid => BadRequest(Constants.Invalid),
+            Constants.Invalid => BadRequest("Invalid New Coin"),
+            Constants.Exists => BadRequest(Constants.Exists),
             Constants.Success => Ok("Updated"),
             _ => BadRequest()
         };

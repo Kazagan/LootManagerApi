@@ -31,7 +31,7 @@
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb5ea0e3_002Dc911_002D4e26_002D8959_002Dc8cd8247d18c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CoinTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb5ea0e3_002Dc911_002D4e26_002D8959_002Dc8cd8247d18c/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="True" ContinuousTestingMode="1" IsActive="True" Name="CoinTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::EDCEFE44-1D66-41B5-BEAA-3A6F743EF817::net6.0::EndToEnd.EndPointTests.CoinRollerTests.ShouldGetAll&lt;/TestId&gt;
