@@ -37,7 +37,7 @@ public class CoinRollerService
         var coin = _coinService.Get(coinRoller.Coin);
         if (coin is null)
         {
-            return "Must provide existing coin.";
+            return Constants.InvalidChild;
         }
         coinRoller.Coin = coin;
         if (coinRoller.IsInvalid())

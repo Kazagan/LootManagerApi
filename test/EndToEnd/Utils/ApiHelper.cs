@@ -23,7 +23,8 @@ public class ApiHelper
         var request = new RestRequest(uri)
             .AddJsonBody(entity);
 
-        return await _client.PostAsync(request);
+        var response  =  await _client.ExecutePostAsync(request);
+        return response;
     }
 
     public async Task<RestResponse> Update<TEntity>(Uri uri, TEntity entity) where TEntity : Entity
