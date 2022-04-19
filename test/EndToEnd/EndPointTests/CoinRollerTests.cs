@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using AutoFixture;
 using Data.Entities;
 using EndToEnd.Utils;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json;
 using RestSharp;
 using Xunit;
@@ -98,7 +95,7 @@ public class CoinRollerTests
             .AddParameter("treasureLevel", expected.TreasureLevel);
 
         var response = await _client.GetAsync(request);
-        var result = JsonConvert.DeserializeObject<IEnumerable<CoinRoller>>(response.Content);
+        var result = JsonConvert.DeserializeObject<IEnumerable<CoinRoller>>(response.Content).ToList();
         foreach (var expectation in rollers.Where(x => x.TreasureLevel == expected.TreasureLevel))
         {
             result.Should().ContainEquivalentOf(expectation);
@@ -150,7 +147,7 @@ public class CoinRollerTests
                 .AddJsonBody(roller);
             var response = await _client.PostAsync(request);
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            Guid.TryParse(response.Content, out var x).Should().BeTrue();
+            Guid.TryParse(response.Content, out _).Should().BeTrue();
             await Delete(roller);
         }
     }
@@ -304,8 +301,9 @@ public class CoinRollerTests
 
     private async Task Insert(IEnumerable<CoinRoller> rollers)
     {
-        await _apiHelper.Insert(_coinUri, rollers.Select(x => x.Coin));
-        await _apiHelper.Insert(_rollerUri, rollers);
+        var coinRollers = rollers.ToList();
+        await _apiHelper.Insert(_coinUri, coinRollers.Select(x => x.Coin));
+        await _apiHelper.Insert(_rollerUri, coinRollers);
     }
 
     private async Task Delete(CoinRoller roller)

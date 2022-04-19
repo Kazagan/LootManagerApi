@@ -40,7 +40,7 @@ public class CoinTests
         var response = await _client.ExecutePostAsync(request);
         response.IsSuccessful.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        Guid.TryParse(response.Content, out var x).Should().BeTrue();
+        Guid.TryParse(response.Content, out _).Should().BeTrue();
         await _apiHelper.Delete(_uri, coin.Id);
     }
 
@@ -224,7 +224,7 @@ public class CoinTests
         var response = await _client.ExecutePutAsync(request);
         response.IsSuccessful.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        Guid.TryParse(response.Content, out var x).Should().BeTrue();
+        Guid.TryParse(response.Content, out _).Should().BeTrue();
         await _apiHelper.Delete(_uri, coin.Id);
     }
 
